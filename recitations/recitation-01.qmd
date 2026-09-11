@@ -1,5 +1,0 @@
----
-title: "Recitation 1"
-format: html
----
-

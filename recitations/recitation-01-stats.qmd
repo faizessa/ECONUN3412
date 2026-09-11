@@ -1,0 +1,333 @@
+---
+title: "Recitation 1: Review of Statistics"
+subtitle: "ECON UN3412: Econometrics"
+author: "Faiz Essa"
+date: today
+date-format: "MMMM D, YYYY"
+format:
+  pdf:
+    documentclass: article
+    papersize: letter
+    geometry:
+      - margin=1in
+    fontsize: 11pt
+    linestretch: 1.15
+    colorlinks: true
+    linkcolor: NavyBlue
+    urlcolor: NavyBlue
+    citecolor: NavyBlue
+    number-sections: true
+    number-depth: 2
+    header-includes:
+      - '\usepackage{amsmath, amssymb, mathtools}'
+      - '\usepackage{fancyhdr}'
+      - '\pagestyle{fancy}'
+      - '\fancyhf{}'
+      - '\lhead{\footnotesize \textsc{ECON UN3412: Econometrics}}'
+      - '\rhead{\footnotesize \textsc{Recitation 1}}'
+      - '\cfoot{\footnotesize \thepage}'
+      - '\renewcommand{\headrulewidth}{0.4pt}'
+---
+
+# Hypothesis Testing
+
+## Two-Sided Test
+
+Consider an unknown population parameter $\theta$ (e.g., a population mean $\mu$, a regression coefficient $\beta$, or a difference in means). We estimate $\theta$ using a sample estimator $\hat{\theta}$ with estimated standard error $\mathrm{SE}(\hat{\theta})$.
+
+Our goal is to test the null hypothesis against the two-sided alternative:
+$$ H_0: \theta = \theta_0 \quad \text{vs.} \quad H_1: \theta \neq \theta_0 $$
+
+### Standard Error of an Estimator
+
+The [standard error](https://en.wikipedia.org/wiki/Standard_error) of an estimator $\hat{\theta}$, denoted $\sigma_{\hat{\theta}}$, is the standard deviation of its sampling distribution:
+$$ \sigma_{\hat{\theta}} = \sqrt{\operatorname{Var}(\hat{\theta})} $$
+
+Because the true variance $\operatorname{Var}(\hat{\theta})$ typically depends on unknown population parameters, in practice we use the **estimated standard error**, denoted $\mathrm{SE}(\hat{\theta})$ (or $\hat{\sigma}_{\hat{\theta}}$):
+$$ \mathrm{SE}(\hat{\theta}) = \sqrt{\widehat{\operatorname{Var}}(\hat{\theta})} $$
+which substitutes consistent sample estimators for the unknown parameters.
+
+---
+
+### Step-by-Step Testing Procedure
+
+#### Step 1: Compute the Test Statistic & State Its Null Distribution
+
+The general $t$-statistic is defined as:
+$$ t = \frac{\hat{\theta} - \theta_0}{\mathrm{SE}(\hat{\theta})} $$
+
+Under $H_0$ and standard regularity conditions (i.i.d. sampling, finite variance), by the [Central Limit Theorem (CLT)](https://en.wikipedia.org/wiki/Central_limit_theorem) and [Slutsky's Theorem](https://en.wikipedia.org/wiki/Slutsky%27s_theorem), as $n \to \infty$:
+  $$ t = \frac{\hat{\theta} - \theta_0}{\mathrm{SE}(\hat{\theta})} \xrightarrow{d} \mathcal{N}(0, 1) $$
+  The statistic converges in distribution to a **standard normal distribution**. In practice, for large samples ($n \ge 30$), critical values and $p$-values are drawn from $\mathcal{N}(0, 1)$.
+
+#### Step 2: Determine the Critical Values & Rejection Rule
+
+For a chosen significance level $\alpha$ (e.g., 10%, 5%, 1%), we reject $H_0$ in favor of $H_1$ if:
+$$ |t^{\text{act}}| > c_{\alpha/2} $$
+where $c_{\alpha/2}$ is the two-sided critical value such that $\Pr(|Z| > c_{\alpha/2}) = \alpha$.
+
+Under the large-sample normal approximation ($\mathcal{N}(0,1)$):
+
+| Significance Level ($\alpha$) | Confidence Level ($1-\alpha$) | Critical Value ($c_{\alpha/2}$) | Rejection Rule |
+|:---:|:---:|:---:|:---|
+| $10\%$ | $90\%$ | $1.645$ | Reject $H_0$ if $|t^{\text{act}}| > 1.645$ |
+| $5\%$  | $95\%$ | $1.960$ | Reject $H_0$ if $|t^{\text{act}}| > 1.960$ |
+| $1\%$  | $99\%$ | $2.576$ | Reject $H_0$ if $|t^{\text{act}}| > 2.576$ |
+
+#### Step 3: Compute and Interpret the $p$-Value
+
+The $p$-value is the probability of observing a test statistic at least as extreme as the actual value computed ($t^{\text{act}}$), assuming the null hypothesis $H_0$ is true:
+$$ p\text{-value} = 2 \cdot \Pr\left(Z \ge |t^{\text{act}}|\right) = 2 \cdot \left[1 - \Phi(|t^{\text{act}}|)\right] $$
+where $\Phi(\cdot)$ is the standard normal cumulative distribution function (CDF).
+
+- **Interpretation:** The $p$-value measures the plausibility of $H_0$ given the data. If $p\text{-value} \le \alpha$, we reject $H_0$ at significance level $\alpha$.
+
+#### Step 4: Construct and Interpret Confidence Intervals
+
+A $(1 - \alpha)$ confidence interval for $\theta$ is given by:
+$$ \left[ \hat{\theta} - c_{\alpha/2} \cdot \mathrm{SE}(\hat{\theta}), \quad \hat{\theta} + c_{\alpha/2} \cdot \mathrm{SE}(\hat{\theta}) \right] $$
+
+- **Interpretation:** In repeated sampling, $(1 - \alpha)\%$ of such constructed intervals will cover the true parameter $\theta$.
+- **Duality with Hypothesis Testing:** A two-sided test rejects $H_0: \theta = \theta_0$ at significance level $\alpha$ if and only if $\theta_0$ lies **outside** the $(1 - \alpha)$ confidence interval.
+
+---
+
+## One-Sided Test
+
+The test statistic $t = \frac{\hat{\theta} - \theta_0}{\mathrm{SE}(\hat{\theta})}$ and its distribution under $H_0$ ($\mathcal{N}(0, 1)$) remain **identical** to the two-sided test. What changes is the **alternative hypothesis**, the **rejection region** (all $\alpha$ in one tail), and the **$p$-value calculation**.
+
+### Alternative Hypotheses
+
+- **Right-tailed test:** $H_0: \theta = \theta_0 \quad \text{vs.} \quad H_1: \theta > \theta_0$
+- **Left-tailed test:** $H_0: \theta = \theta_0 \quad \text{vs.} \quad H_1: \theta < \theta_0$
+
+### Critical Values & Rejection Regions (Entire $\alpha$ in One Tail)
+
+Because all of the rejection probability $\alpha$ is placed in a single tail (instead of being split into $\alpha / 2$), we use the one-sided critical value $c_\alpha$ satisfying $\Pr(Z > c_\alpha) = \alpha$:
+
+| Significance Level ($\alpha$) | Critical Value ($c_\alpha$) | Right-Tailed Rejection Rule ($H_1: \theta > \theta_0$) | Left-Tailed Rejection Rule ($H_1: \theta < \theta_0$) |
+|:---:|:---:|:---|:---|
+| $10\%$ | $1.282$ | Reject $H_0$ if $t^{\text{act}} > 1.282$ | Reject $H_0$ if $t^{\text{act}} < -1.282$ |
+| $5\%$  | $1.645$ | Reject $H_0$ if $t^{\text{act}} > 1.645$ | Reject $H_0$ if $t^{\text{act}} < -1.645$ |
+| $1\%$  | $2.326$ | Reject $H_0$ if $t^{\text{act}} > 2.326$ | Reject $H_0$ if $t^{\text{act}} < -2.326$ |
+
+### $p$-Value Calculation (No Factor of 2)
+
+We do **not** multiply by 2 because we only accumulate probability mass in the direction of the alternative:
+
+- **Right-tailed ($H_1: \theta > \theta_0$):**
+  $$ p\text{-value} = \Pr\left(Z \ge t^{\text{act}}\right) = 1 - \Phi(t^{\text{act}}) $$
+- **Left-tailed ($H_1: \theta < \theta_0$):**
+  $$ p\text{-value} = \Pr\left(Z \le t^{\text{act}}\right) = \Phi(t^{\text{act}}) $$
+
+### One-Sided Confidence Bounds
+
+Rather than a two-sided interval, a one-sided test corresponds to a **one-sided confidence bound** at level $(1 - \alpha)$:
+
+- **Lower bound ($H_1: \theta > \theta_0$):**
+  $$ \left[ \hat{\theta} - c_\alpha \cdot \mathrm{SE}(\hat{\theta}), \quad \infty \right) $$
+- **Upper bound ($H_1: \theta < \theta_0$):**
+  $$ \left( -\infty, \quad \hat{\theta} + c_\alpha \cdot \mathrm{SE}(\hat{\theta}) \right] $$
+
+---
+
+## Equivalence of the Three Testing Methods
+
+In practice, hypothesis testing is often presented through three different "methods":
+
+1. **Critical Value Approach:** Reject $H_0$ if $|t^{\text{act}}| > c_{\alpha/2}$ (or $t^{\text{act}} > c_\alpha$ for one-sided).
+2. **$p$-Value Approach:** Reject $H_0$ if $p\text{-value} \le \alpha$.
+3. **Confidence Interval Approach:** Reject $H_0$ if $\theta_0 \notin \text{CI}_{1-\alpha}$.
+
+> **Key Takeaway:** These three methods are **mathematically identical**. At any chosen significance level $\alpha$, they will **always** yield the exact same conclusion (reject $H_0$ vs. fail to reject $H_0$).
+
+### Why They Are Mathematically Identical
+Starting from the confidence interval condition:
+$$
+\begin{aligned}
+\theta_0 \notin \left[ \hat{\theta} - c_{\alpha/2} \cdot \mathrm{SE}(\hat{\theta}), \; \hat{\theta} + c_{\alpha/2} \cdot \mathrm{SE}(\hat{\theta}) \right]
+&\iff |\hat{\theta} - \theta_0| > c_{\alpha/2} \cdot \mathrm{SE}(\hat{\theta}) \\
+&\iff \frac{|\hat{\theta} - \theta_0|}{\mathrm{SE}(\hat{\theta})} > c_{\alpha/2} \\
+&\iff |t^{\text{act}}| > c_{\alpha/2} \quad \text{(Critical Value Rule)} \\
+&\iff 2\left[1 - \Phi(|t^{\text{act}}|)\right] \le 2\left[1 - \Phi(c_{\alpha/2})\right] \\
+&\iff p\text{-value} \le \alpha \quad \text{($p$-Value Rule)}
+\end{aligned}
+$$
+
+### How Their Interpretations Differ
+
+While the mathematical decision is identical, each method provides a distinct perspective:
+
+| Method | Question It Answers | Key Advantage |
+|:---|:---|:---|
+| **Critical Value** | *"Is the test statistic further into the tail than the critical threshold $c_{\alpha/2}$?"* | Simple binary decision rule based directly on standard deviations from the null. |
+| **$p$-Value** | *"Assuming $H_0$ is true, what is the probability of observing an estimate at least as extreme as $\hat{\theta}$?"* | Continuous measure of evidence strength; allows readers to evaluate the test at any significance level $\alpha$. |
+| **Confidence Interval** | *"Is the hypothesized value $\theta_0$ among the set of plausible values for the true parameter $\theta$?"* | Retains original economic units; simultaneously displays estimation uncertainty, statistical significance, and economic magnitude. |
+
+---
+
+# Multiple Random Variables
+
+Consider two random variables $X$ and $Y$. In econometrics, we analyze pairs of variables simultaneously (e.g., education and wages, class size and test scores). 
+
+- **Discrete Random Variables:** Take on distinct, countable values. Characterized by **probability mass functions (PMF)** and summations ($\sum$).
+- **Continuous Random Variables:** Take on values across a continuous range. Characterized by **probability density functions (PDF)** and integrals ($\int$).
+
+---
+
+## Joint Probability Distribution
+
+The **joint distribution** models the simultaneous behavior of $X$ and $Y$:
+
+- **Discrete (Joint PMF):** 
+  $$ \Pr(X = x, Y = y) $$
+  Satisfies $\Pr(X = x, Y = y) \ge 0$ and total probability:
+  $$ \sum_x \sum_y \Pr(X = x, Y = y) = 1 $$
+
+- **Continuous (Joint PDF):** 
+  A joint probability density function $f_{X,Y}(x, y) \ge 0$ such that:
+  $$ \int_{-\infty}^\infty \int_{-\infty}^\infty f_{X,Y}(x, y) \, dx \, dy = 1 $$
+  The probability that $(X, Y)$ falls in a region $A$ is:
+  $$ \Pr((X, Y) \in A) = \iint_A f_{X,Y}(x, y) \, dx \, dy $$
+
+---
+
+## Marginal Probability Distribution
+
+The **marginal distribution** of a single variable is obtained by integrating or summing out the other variable:
+
+### Marginal PMF / PDF
+- **Discrete:**
+  $$ \Pr(X = x) = \sum_y \Pr(X = x, Y = y) \quad \text{and} \quad \Pr(Y = y) = \sum_x \Pr(X = x, Y = y) $$
+- **Continuous:**
+  $$ f_X(x) = \int_{-\infty}^\infty f_{X,Y}(x, y) \, dy \quad \text{and} \quad f_Y(y) = \int_{-\infty}^\infty f_{X,Y}(x, y) \, dx $$
+
+### Marginal Expectation (Mean) and Variance
+- **Discrete:**
+  $$ \mu_Y = E[Y] = \sum_y y \cdot \Pr(Y = y) $$
+  $$ \sigma_Y^2 = \operatorname{Var}(Y) = \sum_y (y - \mu_Y)^2 \Pr(Y = y) $$
+- **Continuous:**
+  $$ \mu_Y = E[Y] = \int_{-\infty}^\infty y \cdot f_Y(y) \, dy $$
+  $$ \sigma_Y^2 = \operatorname{Var}(Y) = \int_{-\infty}^\infty (y - \mu_Y)^2 f_Y(y) \, dy $$
+
+---
+
+## Conditional Probability Distribution
+
+The **conditional distribution** of $Y$ given that $X = x$ isolates the behavior of $Y$ within a specific subpopulation defined by $X = x$:
+
+- **Discrete:** For $\Pr(X = x) > 0$:
+  $$ \Pr(Y = y \mid X = x) = \frac{\Pr(X = x, Y = y)}{\Pr(X = x)} $$
+- **Continuous:** For $f_X(x) > 0$:
+  $$ f_{Y \mid X}(y \mid x) = \frac{f_{X,Y}(x, y)}{f_X(x)} $$
+
+### Conditional Expectation (Conditional Mean)
+The expected value of $Y$ given $X = x$ is:
+
+- **Discrete:**
+  $$ E[Y \mid X = x] = \sum_y y \cdot \Pr(Y = y \mid X = x) $$
+- **Continuous:**
+  $$ E[Y \mid X = x] = \int_{-\infty}^\infty y \cdot f_{Y \mid X}(y \mid x) \, dy $$
+
+> **Important Concept:** For a specific number $x$, $E[Y \mid X = x]$ is a deterministic constant. However, considered across the random variable $X$, the conditional expectation $E[Y \mid X]$ is itself a **random variable** (a function of $X$).
+
+---
+
+## Law of Iterated Expectations (LIE)
+
+The [Law of Iterated Expectations](https://en.wikipedia.org/wiki/Law_of_total_expectation) states that the expectation of the conditional expectation of $Y$ given $X$ equals the unconditional expectation of $Y$:
+$$ E[Y] = E_X\Big[E_{Y \mid X}[Y \mid X]\Big] $$
+
+### Proof
+
+#### Discrete Case:
+$$
+\begin{aligned}
+E_X\Big[E[Y \mid X]\Big] &= \sum_x E[Y \mid X = x] \cdot \Pr(X = x) \\
+&= \sum_x \left( \sum_y y \cdot \frac{\Pr(X = x, Y = y)}{\Pr(X = x)} \right) \Pr(X = x) \\
+&= \sum_y y \sum_x \Pr(X = x, Y = y) = \sum_y y \cdot \Pr(Y = y) = E[Y]
+\end{aligned}
+$$
+
+#### Continuous Case:
+$$
+\begin{aligned}
+E_X\Big[E[Y \mid X]\Big] &= \int_{-\infty}^\infty E[Y \mid X = x] \cdot f_X(x) \, dx \\
+&= \int_{-\infty}^\infty \left( \int_{-\infty}^\infty y \cdot \frac{f_{X,Y}(x, y)}{f_X(x)} \, dy \right) f_X(x) \, dx \\
+&= \int_{-\infty}^\infty y \left( \int_{-\infty}^\infty f_{X,Y}(x, y) \, dx \right) dy = \int_{-\infty}^\infty y \cdot f_Y(y) \, dy = E[Y]
+\end{aligned}
+$$
+
+---
+
+## Statistical Independence
+
+Two random variables $X$ and $Y$ are [statistically independent](https://en.wikipedia.org/wiki/Independence_(probability_theory)) if the distribution of one does not depend on the value of the other:
+
+- **Discrete:** $\Pr(X = x, Y = y) = \Pr(X = x) \cdot \Pr(Y = y) \quad \text{for all } x, y$
+- **Continuous:** $f_{X,Y}(x, y) = f_X(x) \cdot f_Y(y) \quad \text{for all } x, y$
+
+**Consequences of Independence:**
+$$ E[Y \mid X] = E[Y], \quad E[XY] = E[X]E[Y], \quad \text{and} \quad \operatorname{Cov}(X, Y) = 0 $$
+
+---
+
+## Summary: Discrete vs. Continuous Counterparts
+
+| Concept | Discrete Random Variables | Continuous Random Variables |
+|:---|:---|:---|
+| **Joint Distribution** | $\Pr(X = x, Y = y)$ | $f_{X,Y}(x, y)$ |
+| **Total Probability** | $\sum_x \sum_y \Pr(X = x, Y = y) = 1$ | $\int_{-\infty}^\infty \int_{-\infty}^\infty f_{X,Y}(x, y) \, dx \, dy = 1$ |
+| **Marginal Distribution** | $\Pr(X = x) = \sum_y \Pr(X = x, Y = y)$ | $f_X(x) = \int_{-\infty}^\infty f_{X,Y}(x, y) \, dy$ |
+| **Conditional Distribution** | $\Pr(Y = y \mid X = x) = \frac{\Pr(X = x, Y = y)}{\Pr(X = x)}$ | $f_{Y \mid X}(y \mid x) = \frac{f_{X,Y}(x, y)}{f_X(x)}$ |
+| **Conditional Mean** | $E[Y \mid X = x] = \sum_y y \Pr(Y = y \mid X = x)$ | $E[Y \mid X = x] = \int_{-\infty}^\infty y f_{Y \mid X}(y \mid x) \, dy$ |
+| **Expectation Operator** | $E[g(X)] = \sum_x g(x) \Pr(X = x)$ | $E[g(X)] = \int_{-\infty}^\infty g(x) f_X(x) \, dx$ |
+
+---
+
+# Measures of Association
+
+## Covariance
+
+The **[covariance](https://en.wikipedia.org/wiki/Covariance)** measures the direction of the linear relationship between two random variables $X$ and $Y$.
+
+### Population Covariance
+$$ \operatorname{Cov}(X, Y) = \sigma_{XY} = E\left[(X - \mu_X)(Y - \mu_Y)\right] = E[XY] - \mu_X \mu_Y $$
+
+- $\operatorname{Cov}(X, Y) > 0$: $X$ and $Y$ tend to move in the same direction.
+- $\operatorname{Cov}(X, Y) < 0$: $X$ and $Y$ tend to move in opposite directions.
+- $\operatorname{Cov}(X, Y) = 0$: $X$ and $Y$ have no linear association (they are uncorrelated).
+
+### The Units Problem of Covariance
+The unit of $\operatorname{Cov}(X, Y)$ is the **product of the units of $X$ and $Y$** (e.g., if $X$ is measured in dollars and $Y$ in hours, $\operatorname{Cov}(X,Y)$ is in dollar-hours). Consequently, the numerical magnitude of covariance depends on the scale of measurement and cannot be used to judge the *strength* of an association.
+
+### Sample Covariance
+Given sample observations $(X_1, Y_1), \dots, (X_n, Y_n)$:
+$$ S_{XY} = \frac{1}{n-1} \sum_{i=1}^n (X_i - \bar{X})(Y_i - \bar{Y}) $$
+
+---
+
+## Correlation Coefficient
+
+The **[correlation coefficient](https://en.wikipedia.org/wiki/Pearson_correlation_coefficient)** standardizes the covariance by dividing by the product of the standard deviations, creating a unit-free measure of linear association.
+
+### Population Correlation
+$$ \operatorname{Corr}(X, Y) = \rho_{XY} = \frac{\operatorname{Cov}(X, Y)}{\sqrt{\operatorname{Var}(X) \cdot \operatorname{Var}(Y)}} = \frac{\sigma_{XY}}{\sigma_X \sigma_Y} $$
+
+### Key Properties
+1. **Bounded Range:** By the [Cauchy--Schwarz inequality](https://en.wikipedia.org/wiki/Cauchy%E2%80%93Schwarz_inequality):
+   $$ -1 \le \rho_{XY} \le 1 $$
+2. **Interpretation of Extremes:**
+   - $\rho_{XY} = 1$: Perfect positive linear association ($Y = a + bX$ with $b > 0$).
+   - $\rho_{XY} = -1$: Perfect negative linear association ($Y = a + bX$ with $b < 0$).
+   - $\rho_{XY} = 0$: No linear relationship ($X$ and $Y$ are uncorrelated).
+3. **Scale Invariance:** $\rho_{XY}$ is unaffected by multiplying or adding constants:
+   $$ \operatorname{Corr}(a + bX, \; c + dY) = \operatorname{sign}(bd) \cdot \operatorname{Corr}(X, Y) $$
+4. **Independence vs. Uncorrelatedness:**
+   $$ \text{Independence} \implies \operatorname{Corr}(X, Y) = 0 $$
+   *(The converse is generally not true: zero correlation only implies no **linear** relationship; non-linear dependencies may still exist.)*
+
+### Sample Correlation
+$$ r_{XY} = \frac{S_{XY}}{S_X S_Y} = \frac{\sum_{i=1}^n (X_i - \bar{X})(Y_i - \bar{Y})}{\sqrt{\sum_{i=1}^n (X_i - \bar{X})^2} \sqrt{\sum_{i=1}^n (Y_i - \bar{Y})^2}} $$
+
+---
