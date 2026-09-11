@@ -1,0 +1,20 @@
+# Mac OS
+.DS_Store
+._*
+
+# Quarto
+.quarto/
+*_cache/
+*_files/
+
+# Stata logs and temporary files
+*.smcl
+*.log
+*.bak
+
+# Jupyter / Python / R temporary files
+.ipynb_checkpoints/
+__pycache__/
+.Rhistory
+.RData
+.Rproj.user/
