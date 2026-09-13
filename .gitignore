@@ -7,11 +7,6 @@
 *_cache/
 *_files/
 
-# Stata logs and temporary files
-*.smcl
-*.log
-*.bak
-
 # Jupyter / Python / R temporary files
 .ipynb_checkpoints/
 __pycache__/
