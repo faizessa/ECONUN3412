@@ -6,7 +6,10 @@ Recitation materials, notes, and Stata scripts for **ECON UN3412 (Econometrics)*
 
 ## 📅 Schedule & Office Hours
 
-- **Recitation Time & Location:** TBD
+- **Recitation Time & Location:** 
+    - First Recitation on [Zoom](https://columbiauniversity.zoom.us/j/98562755547?pwd=EabuBkbI27o7YJT8bKYKvyeESawMeK.1): Monday 9/14 at 4:00-5:15 pm.
+    - All subsequent recitations will be held in person on **Mondays from 2:00-3:15pm in Mudd 644**
+    
 - **Office Hours:** Fridays 10:30–11:30 AM, Lehman Library 207 (Group Study Area)
 
 ---
