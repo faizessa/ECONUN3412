@@ -3,6 +3,9 @@
 * ECON UN3412: Econometrics
 * Recitation 1: Introduction to Stata
 * Companion .do file
+*
+* Required Subdirectories in Working Directory:
+*   - output/   (stores generated logs, exported datasets, and tables)
 *=============================================================================*
 
 * 0. Environment Setup & Logging
@@ -10,7 +13,7 @@ capture log close                              // Close any lingering open logs
 clear all                                      // Clear memory
 set more off                                   // Disable pause prompts during output
 
-* Set working directory to output folder
+* Set working directory to output folder (adjust path as needed)
 cd "/Users/faizessa/Library/CloudStorage/Dropbox/Mac/Documents/ta/ECONUN3412/output"
 
 * Start logging session

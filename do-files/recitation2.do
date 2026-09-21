@@ -3,6 +3,11 @@
 * ECON UN3412: Econometrics
 * Recitation 2: OLS in Stata (The Preston Curve)
 * Companion .do file
+*
+* Required Subdirectories in Working Directory:
+*   - data/     (contains raw input data: wdi_gdp.csv, wdi_life_expectancy.csv)
+*   - output/   (stores intermediate .dta files and recitation2.log)
+*   - images/   (stores exported plots: preston_linear.pdf, preston_log.pdf)
 *=============================================================================*
 
 * 0. Environment Setup & Logging
@@ -10,7 +15,7 @@ capture log close                              // Close any open logs
 clear all                                      // Clear memory
 set more off                                   // Disable pause prompts during output
 
-* Set working directory (adjust path as needed)
+* Set working directory to project root (adjust path as needed)
 cd "/Users/faizessa/Library/CloudStorage/Dropbox/Mac/Documents/ta/ECONUN3412"
 
 * Start logging session
