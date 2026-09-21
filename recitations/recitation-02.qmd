@@ -1,0 +1,1110 @@
+---
+title: "Recitation 2"
+subtitle: "ECON UN3412: Econometrics"
+author: "Faiz Essa"
+date: today
+date-format: "MMMM D, YYYY"
+format:
+  pdf:
+    documentclass: article
+    papersize: letter
+    geometry:
+      - margin=1in
+    fontsize: 11pt
+    linestretch: 1.15
+    colorlinks: true
+    linkcolor: NavyBlue
+    urlcolor: NavyBlue
+    citecolor: NavyBlue
+    number-sections: true
+    number-depth: 2
+    header-includes:
+      - '\usepackage{amsmath, amssymb, mathtools}'
+      - '\usepackage{fancyhdr}'
+      - '\usepackage{tikz}'
+      - '\usetikzlibrary{calc, arrows.meta}'
+      - '\pagestyle{fancy}'
+      - '\fancyhf{}'
+      - '\lhead{\footnotesize \textsc{ECON UN3412: Econometrics}}'
+      - '\rhead{\footnotesize \textsc{Recitation 2}}'
+      - '\cfoot{\footnotesize \thepage}'
+      - '\renewcommand{\headrulewidth}{0.4pt}'
+---
+
+> **Note:** Section titles highlighted in \textcolor{red}{\textbf{red}} are **supplementary material** that were not covered in class. They may be more mathematically advanced.
+
+# Ordinary Least Squares (OLS)
+
+Consider the linear regression model:
+$$
+Y_i = \beta_0 + \beta_1 X_i + u_i
+$$
+where $Y_i$ is the dependent variable, $X_i$ is the independent variable, and $u_i$ is the unobserved error term.
+
+Given sample data $(X_1, Y_1), (X_2, Y_2), \dots, (X_n, Y_n)$, we want to construct a line of best fit:
+$$
+\hat{Y}_i = \hat{\beta}_0 + \hat{\beta}_1 X_i
+$$
+which generates a predicted value $\hat{Y}_i$ for each observation at $X_i$.
+
+Ordinary Least Squares (OLS) chooses the intercept $\hat{\beta}_0$ and slope $\hat{\beta}_1$ to fit a line through data points such that the **sum of squared vertical residuals (distances)** between the observed points and the fitted line is minimized (see Figure \ref{fig:ols-fit}):
+$$
+\min_{\hat{\beta}_0, \, \hat{\beta}_1} \sum_{i=1}^{n} \hat{u}_i^2 = \sum_{i=1}^{n} \left(Y_i - \hat{Y}_i\right)^2 = \sum_{i=1}^{n} \left(Y_i - (\hat{\beta}_0 + \hat{\beta}_1 X_i)\right)^2
+$$
+
+```{=latex}
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+    scale=1.15,
+    >=Stealth,
+    point/.style={circle, fill=NavyBlue, inner sep=2.2pt},
+    fitted/.style={circle, fill=red!80!black, inner sep=1.4pt},
+    residual/.style={dashed, thick, red!80!black}
+]
+    % Coordinate Axes
+    \draw[->, thick] (0,0) -- (8.8,0) node[right] {$X$};
+    \draw[->, thick] (0,0) -- (0,6.6) node[above] {$Y$};
+
+    % Line of Best Fit (OLS): y = 0.6x + 1.2
+    \draw[very thick, NavyBlue] (0.5, 1.5) -- (7.8, 5.88) 
+        node[right, align=left] {\textbf{Line of Best Fit (OLS)}\\[-2pt] $\hat{Y} = \hat{\beta}_0 + \hat{\beta}_1 X$};
+
+    % Intercept
+    \node[left] at (0, 1.2) {$\hat{\beta}_0$};
+    \draw[dotted, gray] (0, 1.2) -- (0.5, 1.5);
+
+    % Residual 1: X=1.5, Y=2.8, Y_hat=2.1
+    \draw[residual] (1.5, 2.8) -- (1.5, 2.1);
+    \node[point] at (1.5, 2.8) {};
+    \node[fitted] at (1.5, 2.1) {};
+
+    % Residual 2: X=2.5, Y=2.0, Y_hat=2.7
+    \draw[residual] (2.5, 2.0) -- (2.5, 2.7);
+    \node[point] at (2.5, 2.0) {};
+    \node[fitted] at (2.5, 2.7) {};
+
+    % Residual 3: X=4.0, Y=4.4, Y_hat=3.6
+    \draw[residual] (4.0, 4.4) -- (4.0, 3.6);
+    \node[point] (P3) at (4.0, 4.4) {};
+    \node[fitted] (F3) at (4.0, 3.6) {};
+
+    % Residual 4: X=5.5, Y=3.8, Y_hat=4.5
+    \draw[residual] (5.5, 3.8) -- (5.5, 4.5);
+    \node[point] at (5.5, 3.8) {};
+    \node[fitted] at (5.5, 4.5) {};
+
+    % Residual 5: X=6.8, Y=5.8, Y_hat=5.28
+    \draw[residual] (6.8, 5.8) -- (6.8, 5.28);
+    \node[point] at (6.8, 5.8) {};
+    \node[fitted] at (6.8, 5.28) {};
+
+    % Annotations
+    \draw[<-, thick, black!75] (P3) ++(0.12, 0.1) -- ++(1.2, 0.5) 
+        node[right, align=left] {Observed data point: $(X_i, Y_i)$};
+
+    \draw[<-, thick, black!75] (F3) ++(0.12, -0.1) -- ++(1.2, -0.5) 
+        node[right, align=left] {Fitted value on line: $(X_i, \hat{Y}_i)$};
+
+    \draw[<-, thick, red!80!black] (4.0, 4.0) -- ++(-1.3, 0.2) 
+        node[left, align=right] {Residual $\hat{u}_i = Y_i - \hat{Y}_i$\\(vertical deviation)};
+
+\end{tikzpicture}
+\caption{OLS minimizes the sum of squared vertical residuals $\sum_{i=1}^{n} \hat{u}_i^2$.}
+\label{fig:ols-fit}
+\end{figure}
+```
+
+---
+
+## \textcolor{red}{Geometric Motivation}
+
+How do we decide which line is the "best" fit? We can naturally motivate this using the **definition of Euclidean distance** in the Cartesian plane $\mathbb{R}^2$.
+
+### 1. Distance for a Single Data Point
+
+In 2D coordinate geometry, the Euclidean distance between any two points $(x_1, y_1)$ and $(x_2, y_2)$ is given by the Pythagorean theorem:
+$$
+d = \sqrt{(x_1 - x_2)^2 + (y_1 - y_2)^2}
+$$
+
+For an observed data point $(X_i, Y_i)$ and its corresponding prediction $(X_i, \hat{Y}_i)$ evaluated at the same $X_i$, the horizontal deviation is zero ($\Delta X = 0$). Thus, the 2D Euclidean distance between the actual observation and the line is purely **vertical**:
+$$
+d_i = \sqrt{(X_i - X_i)^2 + (Y_i - \hat{Y}_i)^2} = \sqrt{(Y_i - \hat{Y}_i)^2} = |Y_i - \hat{Y}_i| = |\hat{u}_i|
+$$
+where $\hat{u}_i = Y_i - \hat{Y}_i$ is the **residual** (the prediction error for observation $i$).
+
+The **squared distance** for observation $i$ is therefore:
+$$
+d_i^2 = (Y_i - \hat{Y}_i)^2 = \hat{u}_i^2
+$$
+
+### 2. Distance Across the Entire Sample
+
+Across all $n$ data points, the total Euclidean distance between the vector of observed values $\mathbf{Y} = (Y_1, \dots, Y_n)'$ and fitted values $\hat{\mathbf{Y}} = (\hat{Y}_1, \dots, \hat{Y}_n)'$ in $n$-dimensional space is:
+$$
+\|\mathbf{Y} - \hat{\mathbf{Y}}\|_2 = \sqrt{\sum_{i=1}^{n} d_i^2} = \sqrt{\sum_{i=1}^{n} (Y_i - \hat{Y}_i)^2}
+$$
+
+Because the square root function is strictly increasing, **minimizing the total Euclidean distance** between the actual data and the regression line is mathematically identical to **minimizing the Sum of Squared Residuals (SSR)**:
+$$
+\min_{\hat{\beta}_0, \, \hat{\beta}_1} \sum_{i=1}^{n} d_i^2 = \min_{\hat{\beta}_0, \, \hat{\beta}_1} \sum_{i=1}^{n} \hat{u}_i^2 = \min_{\hat{\beta}_0, \, \hat{\beta}_1} \sum_{i=1}^{n} \left(Y_i - (\hat{\beta}_0 + \hat{\beta}_1 X_i)\right)^2
+$$
+
+---
+
+# Derivation of the OLS Estimators
+
+We want to find the values of $(\hat{\beta}_0, \hat{\beta}_1)$ that minimize the Sum of Squared Residuals (SSR), defined as the objective function:
+$$
+S(\hat{\beta}_0, \hat{\beta}_1) = \sum_{i=1}^{n} \hat{u}_i^2 = \sum_{i=1}^{n} \left(Y_i - \hat{\beta}_0 - \hat{\beta}_1 X_i\right)^2
+$$
+
+---
+
+## Step 1: First-Order Conditions (OLS Normal Equations)
+
+Setting the partial derivatives of $S(\hat{\beta}_0, \hat{\beta}_1)$ with respect to $\hat{\beta}_0$ and $\hat{\beta}_1$ equal to zero yields the two **OLS Normal Equations**:
+
+### 1. First Normal Equation (Differentiating with respect to $\hat{\beta}_0$):
+Using the chain rule:
+$$
+\frac{\partial S}{\partial \hat{\beta}_0} = \sum_{i=1}^{n} 2\left(Y_i - \hat{\beta}_0 - \hat{\beta}_1 X_i\right)(-1) = -2 \sum_{i=1}^{n} \left(Y_i - \hat{\beta}_0 - \hat{\beta}_1 X_i\right)
+$$
+Setting $\frac{\partial S}{\partial \hat{\beta}_0} = 0$ and dividing by $-2$:
+$$
+\sum_{i=1}^{n} \left(Y_i - \hat{\beta}_0 - \hat{\beta}_1 X_i\right) = 0 \quad \iff \quad \sum_{i=1}^{n} \hat{u}_i = 0
+$$
+
+> **Key Implication 1:** The sum (and therefore the sample mean) of the OLS residuals is always zero: $\bar{\hat{u}} = \frac{1}{n}\sum_{i=1}^n \hat{u}_i = 0$.
+
+### 2. Second Normal Equation (Differentiating with respect to $\hat{\beta}_1$):
+Using the chain rule:
+$$
+\frac{\partial S}{\partial \hat{\beta}_1} = \sum_{i=1}^{n} 2\left(Y_i - \hat{\beta}_0 - \hat{\beta}_1 X_i\right)(-X_i) = -2 \sum_{i=1}^{n} X_i \left(Y_i - \hat{\beta}_0 - \hat{\beta}_1 X_i\right)
+$$
+Setting $\frac{\partial S}{\partial \hat{\beta}_1} = 0$ and dividing by $-2$:
+$$
+\sum_{i=1}^{n} X_i \left(Y_i - \hat{\beta}_0 - \hat{\beta}_1 X_i\right) = 0 \quad \iff \quad \sum_{i=1}^{n} X_i \hat{u}_i = 0
+$$
+
+> **Key Implication 2:** The regressor $X_i$ and the residuals $\hat{u}_i$ are orthogonal in the sample: their sample covariance is zero ($\sum_{i=1}^n X_i \hat{u}_i = 0$).
+
+---
+
+## \textcolor{red}{Why Can We Take Derivatives and Set Them to Zero?}
+
+Why does setting the gradient equal to zero $\left(\nabla S(\hat{\beta}_0, \hat{\beta}_1) = \mathbf{0}\right)$ guarantee that we have found the **unique global minimum** of the sum of squared residuals?
+
+1. **Continuous Differentiability (Smoothness):**
+   $S(\hat{\beta}_0, \hat{\beta}_1)$ is a quadratic polynomial in $\hat{\beta}_0$ and $\hat{\beta}_1$. It is continuous and infinitely differentiable everywhere on $\mathbb{R}^2$, meaning there are no sharp kinks, boundaries, or asymptotes.
+
+2. **Unconstrained Optimization:**
+   The parameter choices $\hat{\beta}_0, \hat{\beta}_1 \in \mathbb{R}$ are unconstrained (they can take any real number), so any local extremum must occur at a stationary point where the gradient is zero:
+   $$
+   \nabla S(\hat{\beta}_0, \hat{\beta}_1) = \begin{pmatrix} \frac{\partial S}{\partial \hat{\beta}_0} \\ \frac{\partial S}{\partial \hat{\beta}_1} \end{pmatrix} = \begin{pmatrix} 0 \\ 0 \end{pmatrix}
+   $$
+
+3. **Strict Convexity (Guaranteed Unique Global Minimum):**
+   To ensure that the critical point is a **minimum** (and not a maximum or saddle point), we inspect the Hessian matrix of second-order partial derivatives:
+   $$
+   H = \begin{pmatrix}
+   \frac{\partial^2 S}{\partial \hat{\beta}_0^2} & \frac{\partial^2 S}{\partial \hat{\beta}_0 \partial \hat{\beta}_1} \\
+   \frac{\partial^2 S}{\partial \hat{\beta}_1 \partial \hat{\beta}_0} & \frac{\partial^2 S}{\partial \hat{\beta}_1^2}
+   \end{pmatrix}
+   =
+   2 \begin{pmatrix}
+   n & \sum_{i=1}^n X_i \\
+   \sum_{i=1}^n X_i & \sum_{i=1}^n X_i^2
+   \end{pmatrix}
+   $$
+   - The first principal minor is $2n > 0$ (for any sample size $n \ge 1$).
+   - The determinant of $H$ is:
+     $$
+     \det(H) = 4 \left( n \sum_{i=1}^n X_i^2 - \left(\sum_{i=1}^n X_i\right)^2 \right) = 4 n \sum_{i=1}^n (X_i - \bar{X})^2
+     $$
+     As long as there is sample variation in $X$ ($\sum (X_i - \bar{X})^2 > 0$, i.e., $X$ is not a constant), $\det(H) > 0$.
+
+   Since both principal minors are strictly positive, $H$ is **strictly positive definite**. This proves that $S(\hat{\beta}_0, \hat{\beta}_1)$ is **strictly convex**, guaranteeing that the solution to the first-order conditions is the **unique global minimum**.
+
+---
+
+## Step 2: Solving for the Intercept $\hat{\beta}_0$
+
+From the first FOC:
+$$
+\sum_{i=1}^{n} Y_i - \sum_{i=1}^{n} \hat{\beta}_0 - \sum_{i=1}^{n} \hat{\beta}_1 X_i = 0
+$$
+Since $\sum_{i=1}^n \hat{\beta}_0 = n \hat{\beta}_0$:
+$$
+\sum_{i=1}^{n} Y_i - n \hat{\beta}_0 - \hat{\beta}_1 \sum_{i=1}^{n} X_i = 0
+$$
+Divide the entire equation by the sample size $n$:
+$$
+\bar{Y} - \hat{\beta}_0 - \hat{\beta}_1 \bar{X} = 0
+$$
+Rearranging gives the formula for the OLS intercept estimator:
+$$
+\boxed{\hat{\beta}_0 = \bar{Y} - \hat{\beta}_1 \bar{X}}
+$$
+
+> **Geometric Takeaway:** The OLS regression line **always passes through the point of sample means** $(\bar{X}, \bar{Y})$.
+
+---
+
+## Step 3: Solving for the Slope $\hat{\beta}_1$
+
+Now substitute $\hat{\beta}_0 = \bar{Y} - \hat{\beta}_1 \bar{X}$ into the second FOC:
+$$
+\sum_{i=1}^{n} X_i \left(Y_i - (\bar{Y} - \hat{\beta}_1 \bar{X}) - \hat{\beta}_1 X_i\right) = 0
+$$
+Group the terms:
+$$
+\sum_{i=1}^{n} X_i \left[ (Y_i - \bar{Y}) - \hat{\beta}_1 (X_i - \bar{X}) \right] = 0
+$$
+Distribute $X_i$:
+$$
+\sum_{i=1}^{n} X_i (Y_i - \bar{Y}) - \hat{\beta}_1 \sum_{i=1}^{n} X_i (X_i - \bar{X}) = 0
+$$
+
+### Useful Algebraic Identities
+
+To express the two summation terms in terms of sample deviations $(X_i - \bar{X})$ and $(Y_i - \bar{Y})$, we use a fundamental property of sample means: **the sum of deviations about the mean is always zero**:
+$$
+\sum_{i=1}^{n} (Y_i - \bar{Y}) = \sum_{i=1}^{n} Y_i - \sum_{i=1}^{n} \bar{Y} = n\bar{Y} - n\bar{Y} = 0
+$$
+
+Using this property, we establish two standard identities:
+
+#### Identity 1: $\sum_{i=1}^{n} X_i (Y_i - \bar{Y}) = \sum_{i=1}^{n} (X_i - \bar{X})(Y_i - \bar{Y})$
+
+**Proof:** Expand the right-hand side by distributing $(X_i - \bar{X})$:
+$$
+\begin{aligned}
+\sum_{i=1}^{n} (X_i - \bar{X})(Y_i - \bar{Y}) &= \sum_{i=1}^{n} \left[ X_i (Y_i - \bar{Y}) - \bar{X}(Y_i - \bar{Y}) \right] \\
+&= \sum_{i=1}^{n} X_i (Y_i - \bar{Y}) - \sum_{i=1}^{n} \bar{X}(Y_i - \bar{Y})
+\end{aligned}
+$$
+Because the sample mean $\bar{X}$ is a constant across all observations $i$, we factor it out of the second summation:
+$$
+\sum_{i=1}^{n} \bar{X}(Y_i - \bar{Y}) = \bar{X} \underbrace{\sum_{i=1}^{n} (Y_i - \bar{Y})}_{= 0} = \bar{X} \cdot 0 = 0
+$$
+Since the second term vanishes, we obtain:
+$$
+\sum_{i=1}^{n} (X_i - \bar{X})(Y_i - \bar{Y}) = \sum_{i=1}^{n} X_i (Y_i - \bar{Y})
+$$
+
+#### Identity 2: $\sum_{i=1}^{n} X_i (X_i - \bar{X}) = \sum_{i=1}^{n} (X_i - \bar{X})^2$
+
+**Proof:** This is simply Identity 1 where $Y_i = X_i$. Distributing $(X_i - \bar{X})$ on the right-hand side:
+$$
+\begin{aligned}
+\sum_{i=1}^{n} (X_i - \bar{X})^2 &= \sum_{i=1}^{n} (X_i - \bar{X})(X_i - \bar{X}) \\
+&= \sum_{i=1}^{n} X_i (X_i - \bar{X}) - \bar{X} \underbrace{\sum_{i=1}^{n} (X_i - \bar{X})}_{= 0} \\
+&= \sum_{i=1}^{n} X_i (X_i - \bar{X}) - \bar{X} \cdot 0 \\
+&= \sum_{i=1}^{n} X_i (X_i - \bar{X})
+\end{aligned}
+$$
+
+
+### Final Formula for $\hat{\beta}_1$
+Substituting these identities into the distributed FOC:
+$$
+\sum_{i=1}^{n} (X_i - \bar{X})(Y_i - \bar{Y}) - \hat{\beta}_1 \sum_{i=1}^{n} (X_i - \bar{X})^2 = 0
+$$
+Solving for $\hat{\beta}_1$:
+$$
+\boxed{\hat{\beta}_1 = \frac{\sum_{i=1}^{n} (X_i - \bar{X})(Y_i - \bar{Y})}{\sum_{i=1}^{n} (X_i - \bar{X})^2} = \frac{s_{XY}}{s_X^2} = \frac{\widehat{\operatorname{Cov}}(X, Y)}{\widehat{\operatorname{Var}}(X)}}
+$$
+
+---
+
+## Special Case: Regression Without an Intercept
+
+Consider the constrained model where the intercept is restricted to zero:
+$$
+Y_i = \beta_1 X_i + u_i
+$$
+The fitted values are $\hat{Y}_i = \tilde{\beta}_1 X_i$, and the objective function to minimize is:
+$$
+S(\tilde{\beta}_1) = \sum_{i=1}^{n} \left(Y_i - \tilde{\beta}_1 X_i\right)^2
+$$
+
+### Only One Normal Equation
+Because there is no intercept parameter $\beta_0$, we only differentiate with respect to $\tilde{\beta}_1$:
+$$
+\frac{d S}{d \tilde{\beta}_1} = -2 \sum_{i=1}^{n} X_i \left(Y_i - \tilde{\beta}_1 X_i\right) = 0
+$$
+Setting this to zero yields **only one Normal Equation**:
+$$
+\sum_{i=1}^{n} X_i \left(Y_i - \tilde{\beta}_1 X_i\right) = 0 \quad \iff \quad \tilde{\beta}_1 \sum_{i=1}^{n} X_i^2 = \sum_{i=1}^{n} X_i Y_i
+$$
+
+### The Resulting Slope Estimator
+Solving the single normal equation for $\tilde{\beta}_1$ gives:
+$$
+\boxed{\tilde{\beta}_1 = \frac{\sum_{i=1}^{n} X_i Y_i}{\sum_{i=1}^{n} X_i^2}}
+$$
+
+---
+
+## Summary Comparison: With vs. Without Intercept
+
+| Property | With Intercept | Without Intercept |
+|:---|:---|:---|
+| **Model Specification** | $Y_i = \beta_0 + \beta_1 X_i + u_i$ | $Y_i = \beta_1 X_i + u_i$ |
+| **Fitted Equation** | $\hat{Y}_i = \hat{\beta}_0 + \hat{\beta}_1 X_i$ | $\hat{Y}_i = \tilde{\beta}_1 X_i$ |
+| **Objective Function** | $\min_{\hat{\beta}_0, \hat{\beta}_1} \sum_{i=1}^n (Y_i - \hat{\beta}_0 - \hat{\beta}_1 X_i)^2$ | $\min_{\tilde{\beta}_1} \sum_{i=1}^n (Y_i - \tilde{\beta}_1 X_i)^2$ |
+| **Normal Equations** | $\sum_{i=1}^n \hat{u}_i = 0$ and $\sum_{i=1}^n X_i \hat{u}_i = 0$ | $\sum_{i=1}^n X_i \hat{u}_i = 0$ |
+| **Intercept Estimator** | $\hat{\beta}_0 = \bar{Y} - \hat{\beta}_1 \bar{X}$ | None ($\tilde{\beta}_0 = 0$) |
+| **Slope Estimator** | $\hat{\beta}_1 = \frac{\sum_{i=1}^n (X_i - \bar{X})(Y_i - \bar{Y})}{\sum_{i=1}^n (X_i - \bar{X})^2}$ | $\tilde{\beta}_1 = \frac{\sum_{i=1}^n X_i Y_i}{\sum_{i=1}^n X_i^2}$ |
+
+---
+
+# Measures of Fit
+
+Once we estimate an OLS regression line, we want to assess **how well the model fits the sample data**. 
+
+---
+
+## Sum of Squares Definitions (TSS, ESS, RSS)
+
+We partition the total variation in the dependent variable $Y_i$ into explained and unexplained components:
+
+### Total Sum of Squares (TSS)
+Measures the **total sample variation** of $Y_i$ around its sample mean $\bar{Y}$:
+$$
+\text{TSS} = \sum_{i=1}^{n} \left(Y_i - \bar{Y}\right)^2
+$$
+
+### Explained Sum of Squares (ESS)
+Measures the variation in $Y_i$ that is **explained by the regression model** (the variation of the fitted values $\hat{Y}_i$ around $\bar{Y}$):
+$$
+\text{ESS} = \sum_{i=1}^{n} \left(\hat{Y}_i - \bar{Y}\right)^2
+$$
+
+### Residual Sum of Squares (RSS / SSR)
+Measures the **unexplained variation** in $Y_i$ (the sum of squared prediction errors or residuals):
+$$
+\text{RSS} = \sum_{i=1}^{n} \hat{u}_i^2 = \sum_{i=1}^{n} \left(Y_i - \hat{Y}_i\right)^2
+$$
+*(Also frequently denoted as $\text{SSR}$, Sum of Squared Residuals).*
+
+---
+
+## Sum of Squares Decomposition
+
+For an OLS regression model **with an intercept**, the total variation in $Y$ decomposes into explained and residual variation:
+$$
+\boxed{\text{TSS} = \text{ESS} + \text{RSS}}
+$$
+
+### Proof:
+We can write each observed deviation from the sample mean as:
+$$
+Y_i - \bar{Y} = \left(\hat{Y}_i - \bar{Y}\right) + \left(Y_i - \hat{Y}_i\right) = \left(\hat{Y}_i - \bar{Y}\right) + \hat{u}_i
+$$
+Squaring both sides and summing over all $i = 1, \dots, n$:
+$$
+\sum_{i=1}^{n} (Y_i - \bar{Y})^2 = \sum_{i=1}^{n} (\hat{Y}_i - \bar{Y})^2 + \sum_{i=1}^{n} \hat{u}_i^2 + 2 \sum_{i=1}^{n} (\hat{Y}_i - \bar{Y})\hat{u}_i
+$$
+Notice that $\hat{Y}_i - \bar{Y} = \hat{\beta}_1 (X_i - \bar{X})$. Thus, the cross-product term is:
+$$
+\sum_{i=1}^{n} (\hat{Y}_i - \bar{Y})\hat{u}_i = \hat{\beta}_1 \sum_{i=1}^{n} (X_i - \bar{X})\hat{u}_i = \hat{\beta}_1 \underbrace{\left(\sum_{i=1}^{n} X_i \hat{u}_i - \bar{X}\sum_{i=1}^{n} \hat{u}_i\right)}_{= 0 \text{ by the OLS Normal Equations}} = 0
+$$
+Since the cross-product is zero, we obtain:
+$$
+\text{TSS} = \text{ESS} + \text{RSS}
+$$
+
+> **Important Note:** This clean decomposition $\text{TSS} = \text{ESS} + \text{RSS}$ requires $\sum_{i=1}^n \hat{u}_i = 0$, which holds **only when the regression includes an intercept**.
+
+---
+
+## $R^2$
+
+The **$R^2$** is the **fraction of the sample variance of $Y$ explained by $X$**:
+$$
+\boxed{R^2 = \frac{\text{ESS}}{\text{TSS}} = 1 - \frac{\text{RSS}}{\text{TSS}}}
+$$
+
+---
+
+## SER (Standard Error of Regression)
+
+The **Standard Error of the Regression (SER)**, denoted $s_{\hat{u}}$, estimates the standard deviation of the error term $u_i$:
+$$
+\boxed{\text{SER} = s_{\hat{u}} = \sqrt{\frac{\text{RSS}}{n - 2}} = \sqrt{\frac{1}{n - 2}\sum_{i=1}^{n} \hat{u}_i^2}}
+$$
+
+- **Degrees of Freedom ($n - 2$):** We divide by $n - 2$ because two degrees of freedom were used to estimate the two parameters $\beta_0$ and $\beta_1$.
+- **Interpretation:** The SER measures the **typical size (spread) of the residuals** in the same units as the dependent variable $Y$.
+
+---
+
+# Sampling Properties of OLS
+
+Now that we have derived the formulas for $\hat{\beta}_0$ and $\hat{\beta}_1$, we study their statistical properties across random samples.
+
+### The Least Squares Assumptions
+
+To analyze the sampling distribution of OLS estimators, we rely on three standard assumptions:
+
+1. **Conditional Mean Zero (Exogeneity):** $\mathbb{E}[u_i \mid X_i] = 0$.
+2. **Independent and Identically Distributed (i.i.d.) Sampling:** $(X_1, Y_1), \dots, (X_n, Y_n)$ are i.i.d. draws from their joint distribution.
+3. **Finite 4th moments:** $0 < \mathbb{E}[X_i^4] < \infty$ and $0 < \mathbb{E}[Y_i^4] < \infty$.
+
+---
+
+### Key Algebraic Decomposition of $\hat{\beta}_1$
+
+Before proving unbiasedness, consistency, and asymptotic normality, we express $\hat{\beta}_1$ in terms of the true parameter $\beta_1$ and the errors $u_i$.
+
+Since $Y_i = \beta_0 + \beta_1 X_i + u_i$ and $\bar{Y} = \beta_0 + \beta_1 \bar{X} + \bar{u}$, subtracting gives:
+$$
+Y_i - \bar{Y} = \beta_1 (X_i - \bar{X}) + (u_i - \bar{u})
+$$
+Substituting this into the OLS formula for $\hat{\beta}_1$:
+$$
+\begin{aligned}
+\hat{\beta}_1 &= \frac{\sum_{i=1}^n (X_i - \bar{X})(Y_i - \bar{Y})}{\sum_{i=1}^n (X_i - \bar{X})^2} \\
+&= \frac{\sum_{i=1}^n (X_i - \bar{X})\left[\beta_1 (X_i - \bar{X}) + (u_i - \bar{u})\right]}{\sum_{i=1}^n (X_i - \bar{X})^2} \\
+&= \beta_1 \frac{\sum_{i=1}^n (X_i - \bar{X})^2}{\sum_{i=1}^n (X_i - \bar{X})^2} + \frac{\sum_{i=1}^n (X_i - \bar{X})(u_i - \bar{u})}{\sum_{i=1}^n (X_i - \bar{X})^2}
+\end{aligned}
+$$
+Because $\sum_{i=1}^n (X_i - \bar{X})\bar{u} = \bar{u}\sum_{i=1}^n (X_i - \bar{X}) = 0$, this simplifies to:
+$$
+\boxed{\hat{\beta}_1 = \beta_1 + \frac{\sum_{i=1}^{n} (X_i - \bar{X}) u_i}{\sum_{i=1}^{n} (X_i - \bar{X})^2}}
+$$
+
+---
+
+## Proof of OLS Unbiasedness
+
+An estimator is **unbiased** if the mean of its sampling distribution equals the true parameter: $\mathbb{E}[\hat{\beta}_1] = \beta_1$ and $\mathbb{E}[\hat{\beta}_0] = \beta_0$.
+
+### 1. Unbiasedness of the Slope ($\hat{\beta}_1$)
+
+Condition on the entire sample of regressors $\mathbf{X} = (X_1, X_2, \dots, X_n)'$:
+$$
+\mathbb{E}[\hat{\beta}_1 \mid \mathbf{X}] = \mathbb{E}\left[ \beta_1 + \frac{\sum_{i=1}^{n} (X_i - \bar{X}) u_i}{\sum_{i=1}^{n} (X_i - \bar{X})^2} \,\Bigg|\, \mathbf{X} \right]
+$$
+Since $\beta_1$ is a constant and the $X_i$ terms are fixed when conditioning on $\mathbf{X}$:
+$$
+\mathbb{E}[\hat{\beta}_1 \mid \mathbf{X}] = \beta_1 + \frac{\sum_{i=1}^{n} (X_i - \bar{X}) \mathbb{E}[u_i \mid \mathbf{X}]}{\sum_{i=1}^{n} (X_i - \bar{X})^2}
+$$
+Under the conditional mean zero assumption ($\mathbb{E}[u_i \mid \mathbf{X}] = 0$):
+$$
+\mathbb{E}[\hat{\beta}_1 \mid \mathbf{X}] = \beta_1 + 0 = \beta_1
+$$
+Applying the **Law of Iterated Expectations (LIE)** to obtain the unconditional expectation:
+$$
+\mathbb{E}[\hat{\beta}_1] = \mathbb{E}\left[ \mathbb{E}[\hat{\beta}_1 \mid \mathbf{X}] \right] = \mathbb{E}[\beta_1] = \beta_1
+$$
+Thus, $\hat{\beta}_1$ is an **unbiased estimator** of $\beta_1$.
+
+### 2. Unbiasedness of the Intercept ($\hat{\beta}_0$)
+
+Recall that $\hat{\beta}_0 = \bar{Y} - \hat{\beta}_1 \bar{X}$. Substituting $\bar{Y} = \beta_0 + \beta_1 \bar{X} + \bar{u}$:
+$$
+\hat{\beta}_0 = (\beta_0 + \beta_1 \bar{X} + \bar{u}) - \hat{\beta}_1 \bar{X} = \beta_0 - (\hat{\beta}_1 - \beta_1)\bar{X} + \bar{u}
+$$
+Taking conditional expectations:
+$$
+\mathbb{E}[\hat{\beta}_0 \mid \mathbf{X}] = \beta_0 - \underbrace{\left(\mathbb{E}[\hat{\beta}_1 \mid \mathbf{X}] - \beta_1\right)}_{= 0}\bar{X} + \underbrace{\mathbb{E}[\bar{u} \mid \mathbf{X}]}_{= 0} = \beta_0
+$$
+By the Law of Iterated Expectations:
+$$
+\mathbb{E}[\hat{\beta}_0] = \mathbb{E}\left[ \mathbb{E}[\hat{\beta}_0 \mid \mathbf{X}] \right] = \beta_0
+$$
+Thus, $\hat{\beta}_0$ is also an **unbiased estimator** of $\beta_0$.
+
+---
+
+## Proof of OLS Consistency
+
+An estimator is **consistent** if it converges in probability to the true population parameter as the sample size $n \to \infty$:
+$$
+\hat{\beta}_1 \xrightarrow{p} \beta_1 \quad \text{and} \quad \hat{\beta}_0 \xrightarrow{p} \beta_0
+$$
+
+### 1. Consistency of the Slope ($\hat{\beta}_1$)
+
+Divide both the numerator and the denominator of the estimation error by $n$:
+$$
+\hat{\beta}_1 - \beta_1 = \frac{\frac{1}{n}\sum_{i=1}^{n} (X_i - \bar{X}) u_i}{\frac{1}{n}\sum_{i=1}^{n} (X_i - \bar{X})^2} = \frac{\frac{1}{n}\sum_{i=1}^{n} (X_i - \bar{X})(u_i - \bar{u})}{\frac{1}{n}\sum_{i=1}^{n} (X_i - \bar{X})^2}
+$$
+
+By the **Weak Law of Large Numbers (WLLN)** as $n \to \infty$:
+1. **Numerator (Sample Covariance of $X$ and $u$):**
+   $$
+   \frac{1}{n}\sum_{i=1}^{n} (X_i - \bar{X})(u_i - \bar{u}) \xrightarrow{p} \operatorname{Cov}(X_i, u_i)
+   $$
+   Under Assumption 1 ($\mathbb{E}[u_i \mid X_i] = 0$), $\operatorname{Cov}(X_i, u_i) = \mathbb{E}[(X_i - \mathbb{E}[X])u_i] = \mathbb{E}[(X_i - \mathbb{E}[X])\mathbb{E}[u_i \mid X_i]] = 0$.
+   Therefore, the numerator converges in probability to **$0$**.
+
+2. **Denominator (Sample Variance of $X$):**
+   $$
+   \frac{1}{n}\sum_{i=1}^{n} (X_i - \bar{X})^2 \xrightarrow{p} \operatorname{Var}(X_i) = \sigma_X^2
+   $$
+   As long as there is population variation in $X$ ($\sigma_X^2 > 0$), the denominator converges to a strictly positive constant.
+
+By **Continuous Mapping Theorem / Slutsky's Theorem**:
+$$
+\hat{\beta}_1 - \beta_1 \xrightarrow{p} \frac{0}{\sigma_X^2} = 0 \quad \implies \quad \boxed{\hat{\beta}_1 \xrightarrow{p} \beta_1}
+$$
+
+### 2. Consistency of the Intercept ($\hat{\beta}_0$)
+
+Since $\hat{\beta}_0 = \bar{Y} - \hat{\beta}_1 \bar{X}$, by the LLN $\bar{Y} \xrightarrow{p} \mathbb{E}[Y]$ and $\bar{X} \xrightarrow{p} \mathbb{E}[X]$. Because $\hat{\beta}_1 \xrightarrow{p} \beta_1$:
+$$
+\hat{\beta}_0 = \bar{Y} - \hat{\beta}_1 \bar{X} \xrightarrow{p} \mathbb{E}[Y] - \beta_1 \mathbb{E}[X]
+$$
+From the true population model $Y_i = \beta_0 + \beta_1 X_i + u_i$, taking expectations gives $\mathbb{E}[Y] = \beta_0 + \beta_1 \mathbb{E}[X]$. Thus:
+$$
+\hat{\beta}_0 \xrightarrow{p} (\beta_0 + \beta_1 \mathbb{E}[X]) - \beta_1 \mathbb{E}[X] = \beta_0 \quad \implies \quad \boxed{\hat{\beta}_0 \xrightarrow{p} \beta_0}
+$$
+
+---
+
+## \textcolor{red}{Proof of OLS Asymptotic Normality}
+
+An estimator is **asymptotically normal** if its distribution, properly centered and scaled by $\sqrt{n}$, converges in distribution to a normal distribution as $n \to \infty$:
+$$
+\sqrt{n}(\hat{\beta}_1 - \beta_1) \xrightarrow{d} \mathcal{N}\left(0, \, \sigma_{\hat{\beta}_1}^2\right)
+$$
+
+### Proof for the Slope ($\hat{\beta}_1$):
+
+Multiply the estimation error by $\sqrt{n}$:
+$$
+\sqrt{n}(\hat{\beta}_1 - \beta_1) = \frac{\frac{1}{\sqrt{n}}\sum_{i=1}^{n} (X_i - \bar{X}) u_i}{\frac{1}{n}\sum_{i=1}^{n} (X_i - \bar{X})^2}
+$$
+
+Let $v_i = (X_i - \mu_X) u_i$. Decomposing the numerator:
+$$
+\frac{1}{\sqrt{n}}\sum_{i=1}^{n} (X_i - \bar{X}) u_i = \frac{1}{\sqrt{n}}\sum_{i=1}^{n} (X_i - \mu_X) u_i - (\bar{X} - \mu_X) \frac{1}{\sqrt{n}}\sum_{i=1}^{n} u_i = \frac{1}{\sqrt{n}}\sum_{i=1}^{n} v_i + o_p(1)
+$$
+Since $\bar{X} - \mu_X \xrightarrow{p} 0$ by the LLN and $\frac{1}{\sqrt{n}}\sum u_i = O_p(1)$ by the CLT, the second term vanishes in probability ($o_p(1)$).
+
+1. **Numerator (Central Limit Theorem):**
+   Because $(X_i, Y_i)$ are i.i.d., the random variables $v_i = (X_i - \mu_X) u_i$ are i.i.d. with mean:
+   $$
+   \mathbb{E}[v_i] = \mathbb{E}\left[(X_i - \mu_X)\mathbb{E}[u_i \mid X_i]\right] = 0
+   $$
+   and variance $\sigma_v^2 = \operatorname{Var}(v_i) = \mathbb{E}[(X_i - \mu_X)^2 u_i^2]$. By the **Central Limit Theorem (CLT)**:
+   $$
+   \frac{1}{\sqrt{n}}\sum_{i=1}^{n} v_i \xrightarrow{d} \mathcal{N}\left(0, \, \sigma_v^2\right)
+   $$
+
+2. **Denominator (Law of Large Numbers):**
+   By the **LLN**:
+   $$
+   \frac{1}{n}\sum_{i=1}^{n} (X_i - \bar{X})^2 \xrightarrow{p} \operatorname{Var}(X_i) = \sigma_X^2
+   $$
+
+3. **Applying Slutsky's Theorem:**
+   By Slutsky's Theorem:
+   $$
+   \sqrt{n}(\hat{\beta}_1 - \beta_1) = \frac{\frac{1}{\sqrt{n}}\sum_{i=1}^{n} v_i}{\frac{1}{n}\sum_{i=1}^{n} (X_i - \bar{X})^2} \xrightarrow{d} \frac{\mathcal{N}(0, \, \sigma_v^2)}{\sigma_X^2} = \mathcal{N}\left(0, \, \frac{\sigma_v^2}{(\sigma_X^2)^2}\right)
+   $$
+   where the asymptotic variance is:
+   $$
+   \sigma_{\hat{\beta}_1}^2 = \frac{\operatorname{Var}\left((X_i - \mu_X)u_i\right)}{\left(\operatorname{Var}(X_i)\right)^2} = \frac{\mathbb{E}\left[(X_i - \mu_X)^2 u_i^2\right]}{\left(\mathbb{E}\left[(X_i - \mu_X)^2\right]\right)^2}
+   $$
+
+> **Key Takeaway:** In large samples ($n \ge 30$), the sampling distribution of $\hat{\beta}_1$ is approximately normal:
+> $$
+> \boxed{\hat{\beta}_1 \stackrel{a}{\sim} \mathcal{N}\left(\beta_1, \, \frac{\sigma_{\hat{\beta}_1}^2}{n}\right)}
+> $$
+> This guarantees that standard $t$-statistics converge to $\mathcal{N}(0, 1)$, enabling valid hypothesis tests and confidence intervals.
+
+---
+
+# Example: The Preston Curve
+
+To connect the theoretical derivations of OLS, measures of fit ($\text{TSS}, \text{ESS}, \text{RSS}, R^2, \text{SER}$), and asymptotic hypothesis testing to empirical practice, we examine one of the most famous empirical relationships in economics: the **Preston Curve** (Samuel Preston, 1975).
+
+The Preston Curve describes the cross-country relationship between economic development (measured by GDP per capita) and population health (measured by life expectancy at birth). 
+
+---
+
+## Setting Up a Clean Do-File & Logging
+
+In empirical research, we **never work from the interactive command window**. Every data transformation, cleaning step, and estimation must be written inside an auditable Stata do-file (`.do`).
+
+Following the workflow established in Recitation 1, every do-file should begin with standard initialization commands:
+
+```stata
+*=============================================================================*
+* Faiz Essa
+* ECON UN3412: Econometrics
+* Recitation 2: OLS in Stata (The Preston Curve)
+*=============================================================================*
+
+* 0. Environment Setup & Logging
+capture log close                              // Close any open logs
+clear all                                      // Clear memory
+set more off                                   // Disable pause prompts during long output
+
+* Set working directory
+cd "/Users/faizessa/Library/CloudStorage/Dropbox/Mac/Documents/ta/ECONUN3412"
+
+* Open log file to record commands and console output
+log using "output/recitation2.log", replace text
+```
+
+> **Why Logging Matters:** The `log using ..., replace text` command creates a plain-text transcript of everything displayed in Stata's Results window. This ensures your empirical analysis is 100% auditable and reproducible. When the script finishes, we close the session with `log close`.
+
+---
+
+## Importing the Raw Datasets
+
+Economists frequently need to combine data from multiple sources. In our `data/` directory, we have two separate World Bank CSV files for the year 2019:
+1. `data/wdi_gdp.csv`: Contains country codes, country names, geographic regions, income groups, and GDP per capita (`gdppc`).
+2. `data/wdi_life_expectancy.csv`: Contains country codes, country names, life expectancy at birth in years (`life_exp`), and infant mortality (`infant_mort`).
+
+We import each CSV using `import delimited` and save them as native Stata `.dta` files:
+
+```stata
+* 1. Import GDP per capita CSV and save as Stata .dta
+import delimited "data/wdi_gdp.csv", clear
+describe
+save "output/wdi_gdp.dta", replace
+
+* 2. Import Life Expectancy CSV and save as Stata .dta
+import delimited "data/wdi_life_expectancy.csv", clear
+describe
+save "output/wdi_life_expectancy.dta", replace
+```
+
+---
+
+## Merging Datasets in Stata (`merge 1:1`)
+
+To merge two datasets, we need a **primary key**—a variable that uniquely identifies observations in both files. Here, both datasets share `country_code` (the 3-letter ISO code, e.g., `USA`, `FRA`, `KEN`).
+
+In Stata, the dataset currently open in memory is called the **master dataset**, while the file stored on disk is called the **using dataset**:
+
+```stata
+* Load master dataset
+use "output/wdi_gdp.dta", clear
+
+* Perform a one-to-one match merge
+merge 1:1 country_code using "output/wdi_life_expectancy.dta"
+```
+
+### Understanding the System Variable `_merge`
+
+Stata automatically creates a diagnostic variable named `_merge` with three possible values:
+
+| Value | Label | Meaning |
+|:---:|:---|:---|
+| `_merge == 1` | `master only` | Observation appeared in master (`wdi_gdp`), but not in using |
+| `_merge == 2` | `using only` | Observation appeared in using (`wdi_life_expectancy`), but not in master |
+| `_merge == 3` | `matched` | Observation matched successfully in **both** datasets |
+
+Stata prints the following diagnostic table to the console:
+
+```text
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             6
+        from master                         0  (_merge==1)
+        from using                          6  (_merge==2)
+
+    matched                               211  (_merge==3)
+    -----------------------------------------
+```
+
+### Auditing and Cleaning Post-Merge
+
+Notice that 6 countries/territories were in the life expectancy file but lacked GDP data for 2019 (`_merge == 2`). For our regression analysis, we keep only observations with complete data across both sources (`_merge == 3`), drop the temporary `_merge` indicator, and save the consolidated dataset:
+
+```stata
+* Inspect the breakdown
+tabulate _merge
+
+* Keep only matched observations across both files
+keep if _merge == 3
+
+* Drop the temporary diagnostic variable
+drop _merge
+
+* Save the clean merged dataset
+save "output/wdi_preston_merged.dta", replace
+```
+
+---
+
+## Evaluating OLS Assumptions: The "Linearity" Assumption
+
+Recall our baseline linear regression model:
+$$
+Y_i = \beta_0 + \beta_1 X_i + u_i
+$$
+Under **Least Squares Assumption 1** (Conditional Mean Zero / Exogeneity):
+$$
+\mathbb{E}[u_i \mid X_i] = 0 \quad \implies \quad \mathbb{E}[Y_i \mid X_i] = \beta_0 + \beta_1 X_i
+$$
+This equation states that the **Population Regression Function (PRF)** is strictly **linear in the regressor $X$**:
+$$
+\frac{d \mathbb{E}[Y \mid X]}{dX} = \beta_1 = \text{constant}
+$$
+
+### The Economic Problem with Linearity in Health & Income
+
+In economics, assuming a constant marginal effect $\beta_1$ across all income levels is deeply unrealistic:
+* **In Low-Income Countries:** Moving from \$500 to \$1,500 of GDP per capita allows a nation to establish basic public health infrastructure: clean drinking water, sewage treatment, childhood vaccinations, and rudimentary medical clinics. This yields a **massive increase** in life expectancy (often 10 to 15 years).
+* **In High-Income Countries:** Moving from \$50,000 to \$51,000 of GDP per capita provides marginal comforts, but basic diseases are already eradicated. Extending life further requires expensive treatments for chronic late-life illnesses, yielding only **marginal gains** in longevity.
+
+This phenomenon is known as **diminishing marginal returns to income**. If the true relationship is concave rather than linear, fitting a straight OLS line will violate $\mathbb{E}[u \mid X] = 0$: the residuals $\hat{u}_i$ will be systematically positive in some regions and systematically negative in others.
+
+---
+
+## Plotting the Data: Testing the Linearity Assumption
+
+Because GDP per capita is measured in raw dollars (running from \$234 to \$193,747), a \$1 increase is negligible. We rescale GDP per capita into **thousands of USD** so that our slope coefficients will have practical, interpretable magnitudes:
+
+```stata
+* Rescale GDP per capita into thousands of USD
+generate gdppc_k = gdppc / 1000
+label variable gdppc_k "GDP per capita (thousands of USD)"
+label variable life_exp "Life expectancy at birth (years)"
+
+* Summary statistics
+summarize life_exp gdppc_k
+```
+
+Stata's summary table displays:
+
+```text
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+    life_exp |        211    73.09047    7.963422      31.53      86.15
+     gdppc_k |        211    19.10102    27.46402     .23431   193.7467
+```
+
+Now we construct a two-way graph overlaying the raw scatterplot with Stata's linear OLS line of best fit (`lfit`):
+
+```stata
+twoway (scatter life_exp gdppc_k, mcolor(navy%70) msize(small)) ///
+       (lfit life_exp gdppc_k, lcolor(cranberry) lwidth(medium)), ///
+       title("Preston Curve: Testing the Linearity Assumption", size(medium)) ///
+       subtitle("Life Expectancy vs. GDP per Capita (2019)", size(small)) ///
+       xtitle("GDP per Capita (Thousands of Current USD)") ///
+       ytitle("Life Expectancy at Birth (Years)") ///
+       legend(order(1 "Countries" 2 "Linear OLS Fit")) ///
+       scheme(s2color) graphregion(color(white))
+
+graph export "images/preston_linear.pdf", replace
+```
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.82\textwidth]{../images/preston_linear.pdf}
+\caption{Preston Curve with Linear OLS Fit. Notice the pronounced concavity: the linear specification systematically underpredicts life expectancy for middle-income countries and fails to capture the steep slope at low incomes.}
+\label{fig:preston-linear}
+\end{figure}
+
+### Visual Diagnostic
+Looking at Figure \ref{fig:preston-linear}, the violation of linearity is glaring:
+1. The true data curve rises steeply between \$0k and \$15k, then bends sharply and flattens out beyond \$30k.
+2. The straight OLS line **severely underpredicts** life expectancy for emerging and middle-income nations (e.g., countries with \$10k–\$30k income clustered far *above* the line).
+3. The linear line **overpredicts** life expectancy for the poorest nations and the very wealthiest nations.
+
+The linear model is clearly **misspecified**.
+
+---
+
+## Choosing an Alternative: The Linear-Log (Semi-Elasticity) Specification
+
+To model diminishing marginal returns, economists transform the regressor using the **natural logarithm**:
+$$
+\text{LifeExp}_i = \alpha_0 + \alpha_1 \ln(\text{GDPpc}_i) + v_i
+$$
+*(Note: In econometrics, when $Y$ is in levels and $X$ is in logarithms, this specification is formally called a **linear-log model**.*
+
+---
+
+### Step 1: Why Natural Logarithms Model Diminishing Returns
+
+Recall from calculus that the derivative of $\ln(X)$ is:
+$$
+\frac{d}{dX} \ln(X) = \frac{1}{X}
+$$
+* When $X$ is small (a low-income country), $\frac{1}{X}$ is very large: an additional dollar causes a steep rise in $\ln(X)$.
+* As $X$ grows large (a high-income country), $\frac{1}{X}$ approaches zero: an additional dollar barely changes $\ln(X)$.
+
+By taking the logarithm of income, we compress large dollar values and stretch out small dollar values, naturally capturing the concavity observed in the Preston Curve.
+
+---
+
+### Step 2: Deriving the Semi-Elasticity (Step-by-Step)
+
+1. **The Fundamental Log Property:**
+   For any small relative change $\frac{\Delta X}{X}$, the change in the natural logarithm approximates the **fractional (proportional) change**:
+   $$
+   \Delta \ln(X) = \ln(X + \Delta X) - \ln(X) \approx \frac{\Delta X}{X}
+   $$
+
+2. **Connecting to the Regression Slope:**
+   Taking differences across our regression equation $\widehat{Y} = \hat{\alpha}_0 + \hat{\alpha}_1 \ln(X)$:
+   $$
+   \Delta \widehat{Y} = \hat{\alpha}_1 \cdot \Delta \ln(X) \approx \hat{\alpha}_1 \cdot \left(\frac{\Delta X}{X}\right)
+   $$
+
+3. **Converting Fractional Change to Percentage Change:**
+   Recall that a **percentage change** is simply the fractional change multiplied by 100:
+   $$
+   \% \Delta X = 100 \times \left(\frac{\Delta X}{X}\right) \quad \implies \quad \frac{\Delta X}{X} = \frac{\% \Delta X}{100}
+   $$
+   Substituting this into our equation for $\Delta \widehat{Y}$:
+   $$
+   \Delta \widehat{Y} \approx \hat{\alpha}_1 \left(\frac{\% \Delta X}{100}\right) = \left(\frac{\hat{\alpha}_1}{100}\right) \times (\% \Delta X)
+   $$
+
+---
+
+### Step 3: The Practical Rule of Thumb
+
+From this derivation, we obtain the universal interpretation rule for linear-log models:
+
+> **The Linear-Log Interpretation Rule:**
+> A **$1\%$ increase in $X$** ($\% \Delta X = 1$) is associated with an expected change in $Y$ of:
+> $$
+> \boxed{\Delta \widehat{Y} \approx \frac{\hat{\alpha}_1}{100} \text{ units of } Y}
+> $$
+> More generally, a **$p\%$ increase in $X$** is associated with an expected change of $\left(\frac{\hat{\alpha}_1}{100}\right) \times p$ units of $Y$.
+
+---
+
+### Step 4: Economic Intuition
+
+Notice what this specification implies economically: **an equal percentage increase in income yields an equal absolute gain in life expectancy across all countries.**
+
+Consider a **$10\%$ economic growth rate**:
+* **In a low-income country ($\text{GDP} = \$1,000$):** A $10\%$ increase is only **$+\$100$**.
+* **In a wealthy country ($\text{GDP} = \$50,000$):** A $10\%$ increase is **$+\$5,000$**.
+
+Under the linear-log model, both countries achieve the **exact same predicted gain in life expectancy**:
+$$
+\Delta \widehat{\text{LifeExp}} \approx \left(\frac{\hat{\alpha}_1}{100}\right) \times 10 = 0.10 \times \hat{\alpha}_1 \text{ years}
+$$
+This directly mirrors economic reality: it takes **$50$ times more dollars** in a wealthy nation (\$5,000 vs. \$100) to achieve the same additional year of life expectancy because basic health needs are already satisfied.
+
+
+Let us generate the log variable in Stata and plot the transformed data:
+
+```stata
+* Create natural logarithm of raw GDP per capita
+generate log_gdppc = log(gdppc)
+label variable log_gdppc "Log GDP per capita"
+
+* Plot scatterplot with Log-Linear OLS fit
+twoway (scatter life_exp log_gdppc, mcolor(navy%70) msize(small)) ///
+       (lfit life_exp log_gdppc, lcolor(cranberry) lwidth(medium)), ///
+       title("Preston Curve: Log-Linear Specification", size(medium)) ///
+       subtitle("Life Expectancy vs. Log GDP per Capita (2019)", size(small)) ///
+       xtitle("Natural Log of GDP per Capita, ln(GDP)") ///
+       ytitle("Life Expectancy at Birth (Years)") ///
+       legend(order(1 "Countries" 2 "Log-Linear OLS Fit")) ///
+       scheme(s2color) graphregion(color(white))
+
+graph export "images/preston_log.pdf", replace
+```
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.82\textwidth]{../images/preston_log.pdf}
+\caption{Preston Curve with Log-Linear OLS Fit. Transforming GDP per capita into natural logarithms straightens the relationship into an extraordinarily linear cloud of points.}
+\label{fig:preston-log}
+\end{figure}
+
+As seen in Figure \ref{fig:preston-log}, taking the natural logarithm linearizes the relationship: the country observations now scatter symmetrically around the straight line across the entire distribution of income.
+
+---
+
+## Running the OLS Regressions in Stata
+
+We now estimate both specifications using Stata's `regress` command:
+
+```stata
+* Model 1: Baseline Linear Model
+regress life_exp gdppc_k
+
+* Model 2: Log-Linear (Semi-Elasticity) Model
+regress life_exp log_gdppc
+```
+
+### Stata Regression Output: Model 1 (Linear)
+
+```text
+. regress life_exp gdppc_k
+
+      Source |       SS           df       MS      Number of obs   =       211
+-------------+----------------------------------   F(1, 209)       =    119.43
+       Model |  4842.75969         1  4842.75969   Prob > F        =    0.0000
+    Residual |  8474.61845       209  40.5484137   R-squared       =    0.3636
+-------------+----------------------------------   Adj R-squared   =    0.3606
+       Total |  13317.3781       210  63.4160864   Root MSE        =    6.3678
+
+------------------------------------------------------------------------------
+    life_exp |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+     gdppc_k |   .1748528   .0159997    10.93   0.000     .1433113    .2063944
+       _cons |   69.75061   .5343885   130.52   0.000     68.69712    70.80409
+------------------------------------------------------------------------------
+```
+
+### Stata Regression Output: Model 2 (Log-Linear)
+
+```text
+. regress life_exp log_gdppc
+
+      Source |       SS           df       MS      Number of obs   =       211
+-------------+----------------------------------   F(1, 209)       =    456.83
+       Model |  9137.11907         1  9137.11907   Prob > F        =    0.0000
+    Residual |  4180.25907       209  20.0012396   R-squared       =    0.6861
+-------------+----------------------------------   Adj R-squared   =    0.6846
+       Total |  13317.3781       210  63.4160864   Root MSE        =    4.4723
+
+------------------------------------------------------------------------------
+    life_exp |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   log_gdppc |   4.509862   .2110022    21.37   0.000     4.093897    4.925828
+       _cons |   32.78044   1.910945    17.15   0.000     29.01324    36.54764
+------------------------------------------------------------------------------
+```
+
+---
+
+## Deconstructing and Interpreting the Stata Regression Table
+
+Every cell in Stata's regression table maps directly to the theoretical formulas derived earlier in this handout.
+
+### 1. The ANOVA Sum of Squares Table (Top-Left)
+
+* **Model SS ($\text{ESS}$):** The variation in life expectancy explained by the regression line:
+  $$
+  \text{ESS}_{\text{linear}} = 4,842.76, \qquad \text{ESS}_{\text{log}} = 9,137.12
+  $$
+* **Residual SS ($\text{RSS}$ / $\text{SSR}$):** The unexplained variation (sum of squared residuals):
+  $$
+  \text{RSS}_{\text{linear}} = 8,474.62, \qquad \text{RSS}_{\text{log}} = 4,180.26
+  $$
+* **Total SS ($\text{TSS}$):** The total sample variation of $Y$ around $\bar{Y}$:
+  $$
+  \text{TSS} = \sum_{i=1}^{n} (Y_i - \bar{Y})^2 = 13,317.38
+  $$
+  Notice that $\text{TSS}$ is **identical** in both models ($13,317.38$) because the dependent variable $Y_i$ is identical.
+* **Sum of Squares Identity:** As proved in Section 3.2, for any regression with an intercept:
+  $$
+  \text{TSS} = \text{ESS} + \text{RSS}
+  $$
+  In Model 1: $4,842.76 + 8,474.62 = 13,317.38$.
+* **Degrees of Freedom (`df`):**
+  * Model: $k = 1$ slope parameter.
+  * Residual: $n - 2 = 211 - 2 = 209$.
+  * Total: $n - 1 = 211 - 1 = 210$.
+
+---
+
+### 2. Summary Fit Statistics (Top-Right)
+
+* **Sample Size (`Number of obs`):** $n = 211$ countries.
+* **$R^2$ (`R-squared`):** The fraction of total variation in life expectancy explained by income:
+  $$
+  R^2_{\text{linear}} = \frac{\text{ESS}}{\text{TSS}} = \frac{4,842.76}{13,317.38} = \mathbf{0.3636}
+  $$
+  $$
+  R^2_{\text{log}} = \frac{\text{ESS}}{\text{TSS}} = \frac{9,137.12}{13,317.38} = \mathbf{0.6861}
+  $$
+  > **Key Takeaway:** Simply transforming GDP per capita into logs nearly **doubles the explanatory power** of the regression ($R^2$ jumps from $36.4\%$ to $68.6\%$).
+* **Standard Error of the Regression (`Root MSE` = $\text{SER} = s_{\hat{u}}$):**
+  Measures the typical size of the residual prediction error in the original units of $Y$ (years):
+  $$
+  \text{SER}_{\text{linear}} = \sqrt{\frac{\text{RSS}}{n - 2}} = \sqrt{\frac{8,474.62}{209}} = \mathbf{6.368 \text{ years}}
+  $$
+  $$
+  \text{SER}_{\text{log}} = \sqrt{\frac{\text{RSS}}{n - 2}} = \sqrt{\frac{4,180.26}{209}} = \mathbf{4.472 \text{ years}}
+  $$
+  The log specification reduces the standard prediction error by nearly **2 full years** of life.
+
+---
+
+### 3. Parameter Estimates & Inference (Bottom Table)
+
+#### Model 1: Baseline Linear Model
+The estimated OLS sample regression line is:
+$$
+\widehat{\text{LifeExp}}_i = 69.75 + 0.1749 \times \text{GDPpc\_k}_i
+$$
+
+* **Slope Coefficient ($\hat{\beta}_1 = 0.1749$):**
+  * **Economic Interpretation:** An increase of \$1,000 in GDP per capita is associated with an expected increase of **$0.175$ years** (approximately $2.1$ months) in life expectancy at birth.
+  * **Standard Error ($\mathrm{SE}(\hat{\beta}_1) = 0.0160$):** Measures the sampling variability of the estimator across repeated random samples.
+  * **$t$-Statistic & $p$-Value:**
+    $$
+    t = \frac{\hat{\beta}_1 - 0}{\mathrm{SE}(\hat{\beta}_1)} = \frac{0.17485}{0.01600} = 10.93
+    $$
+    Since $|t| = 10.93 \gg 1.960$ and $p < 0.001$, we **reject $H_0: \beta_1 = 0$** at any standard significance level ($\alpha = 0.01, 0.05, 0.10$).
+  * **95% Confidence Interval:** $[0.143, \, 0.206]$. We are 95% confident that the true population increase in life expectancy per \$1,000 lies between $0.143$ and $0.206$ years.
+* **Intercept Coefficient ($\hat{\beta}_0 = 69.75$):**
+  * **Interpretation:** Predicts an average life expectancy of $69.75$ years for a hypothetical country with $\text{GDP} = \$0$.
+  * **Econometric Caution:** No country in the sample has zero income ($\text{Min} = \$234$). The intercept represents a pure out-of-sample extrapolation to anchor the line of best fit.
+
+---
+
+#### Model 2: Log-Linear Model
+The estimated OLS sample regression line is:
+$$
+\widehat{\text{LifeExp}}_i = 32.78 + 4.510 \times \ln(\text{GDPpc}_i)
+$$
+
+* **Slope Coefficient ($\hat{\alpha}_1 = 4.510$):**
+  * **Economic Interpretation (1% Increase):** A 1% increase in GDP per capita is associated with an expected increase in life expectancy of:
+    $$
+    \frac{\hat{\alpha}_1}{100} = \frac{4.510}{100} = \mathbf{0.0451 \text{ years}} \quad (\approx 16.5 \text{ days})
+    $$
+  * **Interpretation (10% Increase):** A 10% increase in GDP per capita is associated with $\approx 0.45$ additional years ($\approx 5.4$ months) of life.
+  * **Interpretation (Doubling of Income):** Doubling a country's GDP per capita represents a $\approx 70\%$ increase ($\ln(2) \approx 0.693$). Therefore, doubling income is associated with:
+    $$
+    \ln(2) \times 4.510 \approx 0.693 \times 4.510 = \mathbf{3.13 \text{ additional years}}
+    $$
+  * **Statistical Significance:** $t = 21.37$ ($p < 0.0001$), with a tight 95% confidence interval of $[4.094, \, 4.926]$.
+
+---
+
+## Hypothesis Testing with Stata's `test` Command
+
+In addition to testing the default null hypothesis $H_0: \beta_1 = 0$ reported in the output table, economists often test **specific non-zero economic hypotheses**.
+
+For example, suppose a health policy researcher hypothesizes that an additional \$1,000 of income increases life expectancy by **half a year** ($H_0: \beta_1 = 0.5$ vs. $H_1: \beta_1 \neq 0.5$).
+
+Immediately after running `regress`, we test this hypothesis using Stata's post-estimation `test` command:
+
+```stata
+regress life_exp gdppc_k
+test gdppc_k = 0.5
+```
+
+Stata returns:
+
+```text
+ ( 1)  gdppc_k = .5
+
+       F(  1,   209) =  412.98
+            Prob > F =    0.0000
+```
+
+### Understanding the Stata `test` Output
+1. **Relationship between $F$ and $t$:** For a single linear restriction on one parameter, the $F$-statistic is mathematically identical to the squared $t$-statistic:
+   $$
+   t = \frac{\hat{\beta}_1 - 0.5}{\mathrm{SE}(\hat{\beta}_1)} = \frac{0.17485 - 0.5}{0.0159997} = \frac{-0.32515}{0.01600} = -20.322
+   $$
+   $$
+   F = t^2 = (-20.322)^2 = \mathbf{412.98}
+   $$
+2. **Decision:** Because $F = 412.98$ yields a $p$-value $< 0.0001$, we **decisively reject $H_0: \beta_1 = 0.5$** at the 1% significance level. The actual return to \$1,000 of income across the whole sample is substantially lower than half a year.
+

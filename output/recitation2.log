@@ -1,0 +1,261 @@
+-------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/faizessa/Library/CloudStorage/Dropbox/Mac/Documents/ta/ECON
+> UN3412/output/recitation2.log
+  log type:  text
+ opened on:  20 Sep 2026, 22:29:55
+
+. 
+. *============================================================================
+> =*
+. * 1. IMPORTING AND PREPARING THE DATASETS
+. *============================================================================
+> =*
+. 
+. * Import GDP per capita CSV and save as Stata .dta
+. import delimited "data/wdi_gdp.csv", clear
+(6 vars, 211 obs)
+
+. describe
+
+Contains data
+  obs:           211                          
+ vars:             6                          
+ size:        22,577                          
+-------------------------------------------------------------------------------
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+country_code    str3    %9s                   
+country_name    str30   %30s                  
+region          str49   %49s                  
+income_group    str19   %19s                  
+year            int     %8.0g                 
+gdppc           float   %9.0g                 
+-------------------------------------------------------------------------------
+Sorted by: 
+     Note: Dataset has changed since last saved.
+
+. save "output/wdi_gdp.dta", replace
+file output/wdi_gdp.dta saved
+
+. 
+. * Import Life Expectancy CSV and save as Stata .dta
+. import delimited "data/wdi_life_expectancy.csv", clear
+(5 vars, 217 obs)
+
+. describe
+
+Contains data
+  obs:           217                          
+ vars:             5                          
+ size:         9,331                          
+-------------------------------------------------------------------------------
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+country_code    str3    %9s                   
+country_name    str30   %30s                  
+year            int     %8.0g                 
+life_exp        float   %9.0g                 
+infant_mort     float   %9.0g                 
+-------------------------------------------------------------------------------
+Sorted by: 
+     Note: Dataset has changed since last saved.
+
+. save "output/wdi_life_expectancy.dta", replace
+file output/wdi_life_expectancy.dta saved
+
+. 
+. *============================================================================
+> =*
+. * 2. MERGING THE TWO DATASETS
+. *============================================================================
+> =*
+. 
+. * Load the master dataset (GDP per capita)
+. use "output/wdi_gdp.dta", clear
+
+. 
+. * Perform a 1:1 merge using the 3-letter ISO country code
+. merge 1:1 country_code using "output/wdi_life_expectancy.dta"
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                             6
+        from master                         0  (_merge==1)
+        from using                          6  (_merge==2)
+
+    matched                               211  (_merge==3)
+    -----------------------------------------
+
+. 
+. * Inspect the merge diagnostic table
+. tabulate _merge
+
+                 _merge |      Freq.     Percent        Cum.
+------------------------+-----------------------------------
+         using only (2) |          6        2.76        2.76
+            matched (3) |        211       97.24      100.00
+------------------------+-----------------------------------
+                  Total |        217      100.00
+
+. 
+. * Keep only matched observations across both files
+. keep if _merge == 3
+(6 observations deleted)
+
+. 
+. * Drop the system-generated merge indicator
+. drop _merge
+
+. 
+. * Save the consolidated cross-country dataset
+. save "output/wdi_preston_merged.dta", replace
+file output/wdi_preston_merged.dta saved
+
+. 
+. *============================================================================
+> =*
+. * 3. EXPLORATORY ANALYSIS & THE LINEARITY ASSUMPTION
+. *============================================================================
+> =*
+. 
+. * Rescale GDP per capita into thousands of USD for interpretable coefficients
+. generate gdppc_k = gdppc / 1000
+
+. label variable gdppc_k "GDP per capita (thousands of USD)"
+
+. label variable life_exp "Life expectancy at birth (years)"
+
+. 
+. * Summary statistics
+. summarize life_exp gdppc gdppc_k
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+    life_exp |        211    73.09047    7.963422      31.53      86.15
+       gdppc |        211    19101.02    27464.02     234.31   193746.7
+     gdppc_k |        211    19.10102    27.46402     .23431   193.7467
+
+. 
+. * Plot 1: Testing the Linearity Assumption (Scatterplot + Linear OLS fit)
+. twoway (scatter life_exp gdppc_k, mcolor(navy%70) msize(small)) ///
+>        (lfit life_exp gdppc_k, lcolor(cranberry) lwidth(medium)), ///
+>        title("Preston Curve: Testing the Linearity Assumption", size(medium))
+>  ///
+>        subtitle("Life Expectancy vs. GDP per Capita (2019)", size(small)) ///
+>        xtitle("GDP per Capita (Thousands of Current USD)") ///
+>        ytitle("Life Expectancy at Birth (Years)") ///
+>        legend(order(1 "Countries" 2 "Linear OLS Fit")) ///
+>        scheme(s2color) graphregion(color(white))
+
+. 
+. graph export "images/preston_linear.pdf", replace
+(file images/preston_linear.pdf written in PDF format)
+
+. 
+. *============================================================================
+> =*
+. * 4. AN ALTERNATIVE MODEL: LOG-LINEAR SPECIFICATION
+. *============================================================================
+> =*
+. 
+. * Create natural logarithm of GDP per capita
+. generate log_gdppc = log(gdppc)
+
+. label variable log_gdppc "Log GDP per capita"
+
+. 
+. * Plot 2: Scatterplot + Log-Linear OLS fit
+. twoway (scatter life_exp log_gdppc, mcolor(navy%70) msize(small)) ///
+>        (lfit life_exp log_gdppc, lcolor(cranberry) lwidth(medium)), ///
+>        title("Preston Curve: Log-Linear Specification", size(medium)) ///
+>        subtitle("Life Expectancy vs. Log GDP per Capita (2019)", size(small))
+>  ///
+>        xtitle("Natural Log of GDP per Capita, ln(GDP)") ///
+>        ytitle("Life Expectancy at Birth (Years)") ///
+>        legend(order(1 "Countries" 2 "Log-Linear OLS Fit")) ///
+>        scheme(s2color) graphregion(color(white))
+
+. 
+. graph export "images/preston_log.pdf", replace
+(file images/preston_log.pdf written in PDF format)
+
+. 
+. *============================================================================
+> =*
+. * 5. ESTIMATING AND INTERPRETING OLS REGRESSIONS
+. *============================================================================
+> =*
+. 
+. * Model 1: Baseline Linear Model
+. display _newline "=== Model 1: Linear Specification ==="
+
+=== Model 1: Linear Specification ===
+
+. regress life_exp gdppc_k
+
+      Source |       SS           df       MS      Number of obs   =       211
+-------------+----------------------------------   F(1, 209)       =    119.43
+       Model |  4842.75969         1  4842.75969   Prob > F        =    0.0000
+    Residual |  8474.61845       209  40.5484137   R-squared       =    0.3636
+-------------+----------------------------------   Adj R-squared   =    0.3606
+       Total |  13317.3781       210  63.4160864   Root MSE        =    6.3678
+
+------------------------------------------------------------------------------
+    life_exp |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+     gdppc_k |   .1748528   .0159997    10.93   0.000     .1433113    .2063944
+       _cons |   69.75061   .5343885   130.52   0.000     68.69712    70.80409
+------------------------------------------------------------------------------
+
+. 
+. * Hypothesis Test on Slope: H0: beta_1 = 0.5 vs H1: beta_1 != 0.5
+. test gdppc_k = 0.5
+
+ ( 1)  gdppc_k = .5
+
+       F(  1,   209) =  412.98
+            Prob > F =    0.0000
+
+. 
+. * Model 2: Semi-Elasticity (Log-Linear) Model
+. display _newline "=== Model 2: Log-Linear Specification ==="
+
+=== Model 2: Log-Linear Specification ===
+
+. regress life_exp log_gdppc
+
+      Source |       SS           df       MS      Number of obs   =       211
+-------------+----------------------------------   F(1, 209)       =    456.83
+       Model |  9137.11907         1  9137.11907   Prob > F        =    0.0000
+    Residual |  4180.25907       209  20.0012396   R-squared       =    0.6861
+-------------+----------------------------------   Adj R-squared   =    0.6846
+       Total |  13317.3781       210  63.4160864   Root MSE        =    4.4723
+
+------------------------------------------------------------------------------
+    life_exp |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   log_gdppc |   4.509862   .2110022    21.37   0.000     4.093897    4.925828
+       _cons |   32.78044   1.910945    17.15   0.000     29.01324    36.54764
+------------------------------------------------------------------------------
+
+. 
+. * Hypothesis Test on Slope: H0: alpha_1 = 5 vs H1: alpha_1 != 5
+. test log_gdppc = 5
+
+ ( 1)  log_gdppc = 5
+
+       F(  1,   209) =    5.40
+            Prob > F =    0.0211
+
+. 
+. * Close log file
+. log close
+      name:  <unnamed>
+       log:  /Users/faizessa/Library/CloudStorage/Dropbox/Mac/Documents/ta/ECON
+> UN3412/output/recitation2.log
+  log type:  text
+ closed on:  20 Sep 2026, 22:29:56
+-------------------------------------------------------------------------------

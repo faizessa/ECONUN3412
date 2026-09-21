@@ -1,0 +1,218 @@
+country_code,country_name,year,life_exp,infant_mort
+ABW,Aruba,2019,76.02,
+AFG,Afghanistan,2019,62.94,56.6
+AGO,Angola,2019,63.05,35.5
+ALB,Albania,2019,79.47,8
+AND,Andorra,2019,84.1,2.9
+ARE,United Arab Emirates,2019,82.6,5
+ARG,Argentina,2019,76.85,8.9
+ARM,Armenia,2019,76.22,10.7
+ASM,American Samoa,2019,72.75,
+ATG,Antigua and Barbuda,2019,77.17,8
+AUS,Australia,2019,82.9,3.2
+AUT,Austria,2019,81.9,2.9
+AZE,Azerbaijan,2019,73.29,16.5
+BDI,Burundi,2019,62.18,35.7
+BEL,Belgium,2019,82.0,3.3
+BEN,Benin,2019,59.89,51.8
+BFA,Burkina Faso,2019,60.18,50.2
+BGD,Bangladesh,2019,72.62,25.4
+BGR,Bulgaria,2019,75.11,5.5
+BHR,Bahrain,2019,80.47,6.5
+BHS,"Bahamas, The",2019,71.41,16
+BIH,Bosnia and Herzegovina,2019,77.39,5.9
+BLR,Belarus,2019,74.23,2.4
+BLZ,Belize,2019,72.58,11.4
+BMU,Bermuda,2019,81.25,
+BOL,Bolivia,2019,67.82,18.4
+BRA,Brazil,2019,75.81,12.9
+BRB,Barbados,2019,76.5,10.6
+BRN,Brunei Darussalam,2019,75.05,9
+BTN,Bhutan,2019,72.0,17.9
+BWA,Botswana,2019,67.17,37.4
+CAF,Central African Republic,2019,31.53,128.9
+CAN,Canada,2019,82.16,4.5
+CHE,Switzerland,2019,83.9,3.5
+CHI,Channel Islands,2019,81.2,
+CHL,Chile,2019,80.32,6
+CHN,China,2019,77.94,6
+CIV,Cote d'Ivoire,2019,60.27,51.8
+CMR,Cameroon,2019,61.7,46.9
+COD,"Congo, Dem. Rep.",2019,60.24,56.5
+COG,"Congo, Rep.",2019,63.15,33.2
+COL,Colombia,2019,76.79,12.3
+COM,Comoros,2019,65.66,39.8
+CPV,Cabo Verde,2019,75.45,13.2
+CRI,Costa Rica,2019,80.3,7.9
+CUB,Cuba,2019,77.41,5.4
+CUW,Curacao,2019,76.49,
+CYM,Cayman Islands,2019,79.05,
+CYP,Cyprus,2019,81.45,2.5
+CZE,Czechia,2019,79.23,2.4
+DEU,Germany,2019,81.29,3.1
+DJI,Djibouti,2019,64.38,50.2
+DMA,Dominica,2019,71.31,30.6
+DNK,Denmark,2019,81.45,3.3
+DOM,Dominican Republic,2019,73.11,30.9
+DZA,Algeria,2019,75.68,20.7
+ECU,Ecuador,2019,77.29,11.7
+EGY,"Egypt, Arab Rep.",2019,71.21,22.9
+ERI,Eritrea,2019,67.31,28.7
+ESP,Spain,2019,83.83,2.6
+EST,Estonia,2019,78.65,1.9
+ETH,Ethiopia,2019,65.74,40.8
+FIN,Finland,2019,81.98,1.9
+FJI,Fiji,2019,67.01,20.3
+FRA,France,2019,82.83,3.3
+FRO,Faroe Islands,2019,82.39,
+FSM,"Micronesia, Fed. Sts.",2019,66.2,23.7
+GAB,Gabon,2019,67.34,30.1
+GBR,United Kingdom,2019,81.37,3.8
+GEO,Georgia,2019,74.17,8.2
+GHA,Ghana,2019,64.45,32.9
+GIB,Gibraltar,2019,83.18,
+GIN,Guinea,2019,59.38,67
+GMB,"Gambia, The",2019,64.43,38.2
+GNB,Guinea-Bissau,2019,62.16,48.6
+GNQ,Equatorial Guinea,2019,62.3,55.7
+GRC,Greece,2019,81.64,3.5
+GRD,Grenada,2019,74.97,16.8
+GRL,Greenland,2019,71.41,
+GTM,Guatemala,2019,71.64,20.2
+GUM,Guam,2019,76.64,
+GUY,Guyana,2019,69.07,27.1
+HKG,"Hong Kong SAR, China",2019,85.16,
+HND,Honduras,2019,72.12,14.9
+HRV,Croatia,2019,78.22,4
+HTI,Haiti,2019,64.33,44.7
+HUN,Hungary,2019,76.32,3.4
+IDN,Indonesia,2019,70.35,18.5
+IMN,Isle of Man,2019,80.74,
+IND,India,2019,70.75,29.8
+IRL,Ireland,2019,82.7,3
+IRN,"Iran, Islamic Rep.",2019,76.86,12.1
+IRQ,Iraq,2019,71.25,23.5
+ISL,Iceland,2019,83.16,2.1
+ISR,Israel,2019,82.8,2.9
+ITA,Italy,2019,83.5,2.6
+JAM,Jamaica,2019,71.53,17.2
+JOR,Jordan,2019,76.86,13.7
+JPN,Japan,2019,84.36,1.8
+KAZ,Kazakhstan,2019,73.66,8.1
+KEN,Kenya,2019,62.94,37
+KGZ,Kyrgyz Republic,2019,71.6,16
+KHM,Cambodia,2019,70.13,20.1
+KIR,Kiribati,2019,65.87,42.9
+KNA,St. Kitts and Nevis,2019,71.54,15.9
+KOR,"Korea, Rep.",2019,83.23,2.6
+KWT,Kuwait,2019,81.97,7.6
+LAO,Lao PDR,2019,67.91,33.3
+LBN,Lebanon,2019,78.21,12.6
+LBR,Liberia,2019,61.23,63.3
+LBY,Libya,2019,72.94,9.2
+LCA,St. Lucia,2019,72.25,16.6
+LIE,Liechtenstein,2019,84.16,
+LKA,Sri Lanka,2019,76.7,6.2
+LSO,Lesotho,2019,55.25,63.5
+LTU,Lithuania,2019,76.28,3.3
+LUX,Luxembourg,2019,82.64,2
+LVA,Latvia,2019,75.39,3.3
+MAC,"Macao SAR, China",2019,83.93,
+MAF,St. Martin (French part),2019,80.08,
+MAR,Morocco,2019,74.25,17.8
+MCO,Monaco,2019,86.15,2.6
+MDA,Moldova,2019,70.18,14.1
+MDG,Madagascar,2019,63.5,44.1
+MDV,Maldives,2019,79.71,6.4
+MEX,Mexico,2019,74.53,13.7
+MHL,Marshall Islands,2019,66.05,26.2
+MKD,North Macedonia,2019,76.6,6.3
+MLI,Mali,2019,59.22,57.6
+MLT,Malta,2019,82.66,5.4
+MMR,Myanmar,2019,66.46,38.4
+MNE,Montenegro,2019,76.68,2.6
+MNG,Mongolia,2019,71.05,12.8
+MNP,Northern Mariana Islands,2019,77.84,
+MOZ,Mozambique,2019,61.31,49.2
+MRT,Mauritania,2019,67.64,34.9
+MUS,Mauritius,2019,74.24,14
+MWI,Malawi,2019,65.0,38.3
+MYS,Malaysia,2019,75.9,6.8
+NAM,Namibia,2019,63.55,42.8
+NCL,New Caledonia,2019,77.26,
+NER,Niger,2019,60.03,69.3
+NGA,Nigeria,2019,53.01,69.1
+NIC,Nicaragua,2019,73.76,12.6
+NLD,Netherlands,2019,82.11,3.5
+NOR,Norway,2019,82.96,2
+NPL,Nepal,2019,69.3,27.1
+NRU,Naoero,2019,61.39,11.1
+NZL,New Zealand,2019,82.06,4.4
+OMN,Oman,2019,79.95,8.7
+PAK,Pakistan,2019,66.73,56.3
+PAN,Panama,2019,78.51,12.6
+PER,Peru,2019,76.28,12.5
+PHL,Philippines,2019,69.68,22.6
+PLW,Palau,2019,68.98,19.8
+PNG,Papua New Guinea,2019,65.33,36.2
+POL,Poland,2019,77.9,3.8
+PRI,Puerto Rico (US),2019,81.44,
+PRK,"Korea, Dem. People's Rep.",2019,72.93,14.3
+PRT,Portugal,2019,81.68,2.8
+PRY,Paraguay,2019,73.67,17
+PSE,West Bank and Gaza,2019,75.81,13.6
+PYF,French Polynesia,2019,83.19,
+QAT,Qatar,2019,82.94,5.4
+ROU,Romania,2019,75.61,5.6
+RUS,Russian Federation,2019,73.08,4.8
+RWA,Rwanda,2019,66.69,31.7
+SAU,Saudi Arabia,2019,78.31,5.7
+SDN,Sudan,2019,65.8,43.4
+SEN,Senegal,2019,67.67,34.8
+SGP,Singapore,2019,83.6,2
+SLB,Solomon Islands,2019,69.98,18.7
+SLE,Sierra Leone,2019,59.59,64
+SLV,El Salvador,2019,71.72,10.6
+SMR,San Marino,2019,85.26,1.5
+SOM,"Somalia, Fed. Rep.",2019,57.25,75
+SRB,Serbia,2019,75.94,4.8
+SSD,South Sudan,2019,58.13,71.9
+STP,Sao Tome and Principe,2019,68.04,11.3
+SUR,Suriname,2019,71.77,17.1
+SVK,Slovak Republic,2019,77.67,5
+SVN,Slovenia,2019,81.53,2
+SWE,Sweden,2019,83.11,2.2
+SWZ,Eswatini,2019,59.85,47.6
+SXM,Sint Maarten (Dutch part),2019,75.68,
+SYC,Seychelles,2019,74.05,13.6
+SYR,Syrian Arab Republic,2019,70.97,21.1
+TCA,Turks and Caicos Islands,2019,77.69,3.6
+TCD,Chad,2019,52.99,64.6
+TGO,Togo,2019,61.06,40.2
+THA,Thailand,2019,77.2,8.9
+TJK,Tajikistan,2019,70.96,25
+TKM,Turkmenistan,2019,69.41,33.9
+TLS,Timor-Leste,2019,66.5,39.6
+TON,Tonga,2019,72.29,8.8
+TTO,Trinidad and Tobago,2019,72.84,19.2
+TUN,Tunisia,2019,75.6,14.4
+TUR,Turkiye,2019,77.74,9.4
+TUV,Tuvalu,2019,66.11,19.4
+TZA,Tanzania,2019,66.01,34.5
+UGA,Uganda,2019,66.35,36.9
+UKR,Ukraine,2019,73.92,8.3
+URY,Uruguay,2019,77.5,6.2
+USA,United States,2019,78.79,5.5
+UZB,Uzbekistan,2019,72.09,14.9
+VCT,St. Vincent and the Grenadines,2019,70.99,12.8
+VEN,"Venezuela, RB",2019,72.77,21.2
+VGB,British Virgin Islands,2019,76.84,13
+VIR,Virgin Islands (U.S.),2019,79.67,
+VNM,Viet Nam,2019,74.21,14.1
+VUT,Vanuatu,2019,70.78,15.1
+WSM,Samoa,2019,70.27,14.9
+XKX,Kosovo,2019,77.25,10.2
+YEM,"Yemen, Rep.",2019,66.57,39
+ZAF,South Africa,2019,66.07,25.1
+ZMB,Zambia,2019,62.91,36.1
+ZWE,Zimbabwe,2019,61.06,55.8

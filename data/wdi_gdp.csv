@@ -1,0 +1,212 @@
+country_code,country_name,region,income_group,year,gdppc
+ABW,Aruba,Latin America & Caribbean ,High income,2019,30654.49
+AFG,Afghanistan,"Middle East, North Africa, Afghanistan & Pakistan",Low income,2019,496.6
+AGO,Angola,Sub-Saharan Africa ,Lower middle income,2019,2507.87
+ALB,Albania,Europe & Central Asia,Upper middle income,2019,6069.44
+AND,Andorra,Europe & Central Asia,High income,2019,41257.8
+ARE,United Arab Emirates,"Middle East, North Africa, Afghanistan & Pakistan",High income,2019,45938.61
+ARG,Argentina,Latin America & Caribbean ,Upper middle income,2019,9955.97
+ARM,Armenia,Europe & Central Asia,Upper middle income,2019,4597.23
+ASM,American Samoa,East Asia & Pacific,High income,2019,12886.14
+ATG,Antigua and Barbuda,Latin America & Caribbean ,High income,2019,18896.37
+AUS,Australia,East Asia & Pacific,High income,2019,55194.76
+AUT,Austria,Europe & Central Asia,High income,2019,49885.99
+AZE,Azerbaijan,Europe & Central Asia,Upper middle income,2019,4805.75
+BDI,Burundi,Sub-Saharan Africa ,Low income,2019,234.31
+BEL,Belgium,Europe & Central Asia,High income,2019,46716.62
+BEN,Benin,Sub-Saharan Africa ,Lower middle income,2019,1130.82
+BFA,Burkina Faso,Sub-Saharan Africa ,Low income,2019,764.85
+BGD,Bangladesh,South Asia,Lower middle income,2019,2129.8
+BGR,Bulgaria,Europe & Central Asia,High income,2019,10354.25
+BHR,Bahrain,"Middle East, North Africa, Afghanistan & Pakistan",High income,2019,27259.74
+BHS,"Bahamas, The",Latin America & Caribbean ,High income,2019,33640.34
+BIH,Bosnia and Herzegovina,Europe & Central Asia,Upper middle income,2019,6122.38
+BLR,Belarus,Europe & Central Asia,Upper middle income,2019,6837.77
+BLZ,Belize,Latin America & Caribbean ,Upper middle income,2019,6171.61
+BMU,Bermuda,North America,High income,2019,115798.04
+BOL,Bolivia,Latin America & Caribbean ,Lower middle income,2019,4203.15
+BRA,Brazil,Latin America & Caribbean ,Upper middle income,2019,9029.83
+BRB,Barbados,Latin America & Caribbean ,High income,2019,21929.44
+BRN,Brunei Darussalam,East Asia & Pacific,High income,2019,30426.57
+BTN,Bhutan,South Asia,Lower middle income,2019,3576.88
+BWA,Botswana,Sub-Saharan Africa ,Upper middle income,2019,7172.09
+CAF,Central African Republic,Sub-Saharan Africa ,Low income,2019,449.23
+CAN,Canada,North America,High income,2019,46352.97
+CHE,Switzerland,Europe & Central Asia,High income,2019,85872.97
+CHI,Channel Islands,Europe & Central Asia,High income,2019,60564.63
+CHL,Chile,Latin America & Caribbean ,High income,2019,14496.93
+CHN,China,East Asia & Pacific,Upper middle income,2019,10342.9
+CIV,Cote d'Ivoire,Sub-Saharan Africa ,Lower middle income,2019,2141.77
+CMR,Cameroon,Sub-Saharan Africa ,Lower middle income,2019,1555.23
+COD,"Congo, Dem. Rep.",Sub-Saharan Africa ,Low income,2019,504.0
+COG,"Congo, Rep.",Sub-Saharan Africa ,Lower middle income,2019,2488.42
+COL,Colombia,Latin America & Caribbean ,Upper middle income,2019,6472.55
+COM,Comoros,Sub-Saharan Africa ,Lower middle income,2019,1519.26
+CPV,Cabo Verde,Sub-Saharan Africa ,Upper middle income,2019,4380.78
+CRI,Costa Rica,Latin America & Caribbean ,High income,2019,12951.86
+CUB,Cuba,Latin America & Caribbean ,Upper middle income,2019,9232.26
+CUW,Curacao,Latin America & Caribbean ,High income,2019,19220.69
+CYM,Cayman Islands,Latin America & Caribbean ,High income,2019,88254.29
+CYP,Cyprus,Europe & Central Asia,High income,2019,29227.17
+CZE,Czechia,Europe & Central Asia,High income,2019,24062.72
+DEU,Germany,Europe & Central Asia,High income,2019,47656.2
+DJI,Djibouti,"Middle East, North Africa, Afghanistan & Pakistan",Lower middle income,2019,2837.17
+DMA,Dominica,Latin America & Caribbean ,Upper middle income,2019,9491.15
+DNK,Denmark,Europe & Central Asia,High income,2019,59404.27
+DOM,Dominican Republic,Latin America & Caribbean ,Upper middle income,2019,8183.02
+DZA,Algeria,"Middle East, North Africa, Afghanistan & Pakistan",Upper middle income,2019,4468.45
+ECU,Ecuador,Latin America & Caribbean ,Upper middle income,2019,6205.06
+EGY,"Egypt, Arab Rep.","Middle East, North Africa, Afghanistan & Pakistan",Lower middle income,2019,2962.99
+ESP,Spain,Europe & Central Asia,High income,2019,29786.52
+EST,Estonia,Europe & Central Asia,High income,2019,24021.25
+ETH,Ethiopia,Sub-Saharan Africa ,Low income,2019,793.47
+FIN,Finland,Europe & Central Asia,High income,2019,48358.18
+FJI,Fiji,East Asia & Pacific,Upper middle income,2019,5842.07
+FRA,France,Europe & Central Asia,High income,2019,40408.28
+FRO,Faroe Islands,Europe & Central Asia,High income,2019,63070.72
+FSM,"Micronesia, Fed. Sts.",East Asia & Pacific,Upper middle income,2019,3581.73
+GAB,Gabon,Sub-Saharan Africa ,Upper middle income,2019,7441.18
+GBR,United Kingdom,Europe & Central Asia,High income,2019,43160.68
+GEO,Georgia,Europe & Central Asia,Upper middle income,2019,4741.28
+GHA,Ghana,Sub-Saharan Africa ,Lower middle income,2019,2186.66
+GIN,Guinea,Sub-Saharan Africa ,Lower middle income,2019,1031.34
+GMB,"Gambia, The",Sub-Saharan Africa ,Low income,2019,738.19
+GNB,Guinea-Bissau,Sub-Saharan Africa ,Low income,2019,811.21
+GNQ,Equatorial Guinea,Sub-Saharan Africa ,Upper middle income,2019,6804.15
+GRC,Greece,Europe & Central Asia,High income,2019,19335.36
+GRD,Grenada,Latin America & Caribbean ,Upper middle income,2019,10462.79
+GRL,Greenland,Europe & Central Asia,High income,2019,53309.2
+GTM,Guatemala,Latin America & Caribbean ,Upper middle income,2019,4512.0
+GUM,Guam,East Asia & Pacific,High income,2019,39274.94
+GUY,Guyana,Latin America & Caribbean ,High income,2019,6405.82
+HKG,"Hong Kong SAR, China",East Asia & Pacific,High income,2019,48359.0
+HND,Honduras,Latin America & Caribbean ,Lower middle income,2019,2502.33
+HRV,Croatia,Europe & Central Asia,High income,2019,15563.74
+HTI,Haiti,Latin America & Caribbean ,Lower middle income,2019,1352.17
+HUN,Hungary,Europe & Central Asia,High income,2019,17012.86
+IDN,Indonesia,East Asia & Pacific,Upper middle income,2019,4106.95
+IMN,Isle of Man,Europe & Central Asia,High income,2019,87127.55
+IND,India,South Asia,Lower middle income,2019,2041.43
+IRL,Ireland,Europe & Central Asia,High income,2019,81827.67
+IRN,"Iran, Islamic Rep.","Middle East, North Africa, Afghanistan & Pakistan",Upper middle income,2019,3997.49
+IRQ,Iraq,"Middle East, North Africa, Afghanistan & Pakistan",Upper middle income,2019,5671.86
+ISL,Iceland,Europe & Central Asia,High income,2019,69296.31
+ISR,Israel,"Middle East, North Africa, Afghanistan & Pakistan",High income,2019,44091.87
+ITA,Italy,Europe & Central Asia,High income,2019,33812.79
+JAM,Jamaica,Latin America & Caribbean ,Upper middle income,2019,6030.69
+JOR,Jordan,"Middle East, North Africa, Afghanistan & Pakistan",Upper middle income,2019,4557.79
+JPN,Japan,East Asia & Pacific,High income,2019,41424.87
+KAZ,Kazakhstan,Europe & Central Asia,Upper middle income,2019,9457.13
+KEN,Kenya,Sub-Saharan Africa ,Lower middle income,2019,1960.41
+KGZ,Kyrgyz Republic,Europe & Central Asia,Lower middle income,2019,1422.0
+KHM,Cambodia,East Asia & Pacific,Lower middle income,2019,2225.88
+KIR,Kiribati,East Asia & Pacific,Lower middle income,2019,1750.24
+KNA,St. Kitts and Nevis,Latin America & Caribbean ,High income,2019,23595.49
+KOR,"Korea, Rep.",East Asia & Pacific,High income,2019,33826.94
+KWT,Kuwait,"Middle East, North Africa, Afghanistan & Pakistan",High income,2019,31707.87
+LAO,Lao PDR,East Asia & Pacific,Lower middle income,2019,2589.32
+LBN,Lebanon,"Middle East, North Africa, Afghanistan & Pakistan",Lower middle income,2019,8905.88
+LBR,Liberia,Sub-Saharan Africa ,Low income,2019,658.16
+LBY,Libya,"Middle East, North Africa, Afghanistan & Pakistan",Upper middle income,2019,9963.19
+LCA,St. Lucia,Latin America & Caribbean ,Upper middle income,2019,11764.39
+LIE,Liechtenstein,Europe & Central Asia,High income,2019,166907.84
+LKA,Sri Lanka,South Asia,Upper middle income,2019,4081.95
+LSO,Lesotho,Sub-Saharan Africa ,Lower middle income,2019,1082.06
+LTU,Lithuania,Europe & Central Asia,High income,2019,19608.79
+LUX,Luxembourg,Europe & Central Asia,High income,2019,112696.65
+LVA,Latvia,Europe & Central Asia,High income,2019,17294.98
+MAC,"Macao SAR, China",East Asia & Pacific,High income,2019,81882.7
+MAF,St. Martin (French part),Latin America & Caribbean ,High income,2019,19033.06
+MAR,Morocco,"Middle East, North Africa, Afghanistan & Pakistan",Lower middle income,2019,3508.1
+MCO,Monaco,Europe & Central Asia,High income,2019,193746.73
+MDA,Moldova,Europe & Central Asia,Upper middle income,2019,4405.33
+MDG,Madagascar,Sub-Saharan Africa ,Low income,2019,499.82
+MDV,Maldives,South Asia,Upper middle income,2019,11740.27
+MEX,Mexico,Latin America & Caribbean ,Upper middle income,2019,10369.56
+MHL,Marshall Islands,East Asia & Pacific,Upper middle income,2019,5292.34
+MKD,North Macedonia,Europe & Central Asia,Upper middle income,2019,6718.86
+MLI,Mali,Sub-Saharan Africa ,Low income,2019,971.95
+MLT,Malta,"Middle East, North Africa, Afghanistan & Pakistan",High income,2019,32421.91
+MMR,Myanmar,East Asia & Pacific,Lower middle income,2019,1425.99
+MNE,Montenegro,Europe & Central Asia,Upper middle income,2019,8749.26
+MNG,Mongolia,East Asia & Pacific,Upper middle income,2019,4347.55
+MNP,Northern Mariana Islands,East Asia & Pacific,High income,2019,24496.67
+MOZ,Mozambique,Sub-Saharan Africa ,Low income,2019,519.09
+MRT,Mauritania,Sub-Saharan Africa ,Lower middle income,2019,1767.07
+MUS,Mauritius,Sub-Saharan Africa ,Upper middle income,2019,11568.25
+MWI,Malawi,Sub-Saharan Africa ,Low income,2019,580.89
+MYS,Malaysia,East Asia & Pacific,Upper middle income,2019,10920.19
+NAM,Namibia,Sub-Saharan Africa ,Lower middle income,2019,4731.92
+NCL,New Caledonia,East Asia & Pacific,High income,2019,33411.34
+NER,Niger,Sub-Saharan Africa ,Low income,2019,541.27
+NGA,Nigeria,Sub-Saharan Africa ,Lower middle income,2019,3189.81
+NIC,Nicaragua,Latin America & Caribbean ,Lower middle income,2019,1958.62
+NLD,Netherlands,Europe & Central Asia,High income,2019,53554.9
+NOR,Norway,Europe & Central Asia,High income,2019,79329.31
+NPL,Nepal,South Asia,Lower middle income,2019,1203.14
+NRU,Naoero,East Asia & Pacific,High income,2019,10801.77
+NZL,New Zealand,East Asia & Pacific,High income,2019,42872.27
+OMN,Oman,"Middle East, North Africa, Afghanistan & Pakistan",High income,2019,19180.19
+PAK,Pakistan,"Middle East, North Africa, Afghanistan & Pakistan",Lower middle income,2019,1390.42
+PAN,Panama,Latin America & Caribbean ,High income,2019,16477.91
+PER,Peru,Latin America & Caribbean ,Upper middle income,2019,7037.01
+PHL,Philippines,East Asia & Pacific,Upper middle income,2019,3400.79
+PLW,Palau,East Asia & Pacific,High income,2019,15841.89
+PNG,Papua New Guinea,East Asia & Pacific,Lower middle income,2019,2575.77
+POL,Poland,Europe & Central Asia,High income,2019,15874.52
+PRI,Puerto Rico (US),Latin America & Caribbean ,High income,2019,31830.53
+PRT,Portugal,Europe & Central Asia,High income,2019,23343.36
+PRY,Paraguay,Latin America & Caribbean ,Upper middle income,2019,5821.18
+PSE,West Bank and Gaza,"Middle East, North Africa, Afghanistan & Pakistan",Lower middle income,2019,3656.86
+PYF,French Polynesia,East Asia & Pacific,High income,2019,21582.59
+QAT,Qatar,"Middle East, North Africa, Afghanistan & Pakistan",High income,2019,66841.3
+ROU,Romania,Europe & Central Asia,High income,2019,12909.61
+RUS,Russian Federation,Europe & Central Asia,High income,2019,11447.7
+RWA,Rwanda,Sub-Saharan Africa ,Low income,2019,823.36
+SAU,Saudi Arabia,"Middle East, North Africa, Afghanistan & Pakistan",High income,2019,29566.79
+SDN,Sudan,Sub-Saharan Africa ,Low income,2019,709.98
+SEN,Senegal,Sub-Saharan Africa ,Lower middle income,2019,1431.18
+SGP,Singapore,East Asia & Pacific,High income,2019,66068.7
+SLB,Solomon Islands,East Asia & Pacific,Lower middle income,2019,2223.66
+SLE,Sierra Leone,Sub-Saharan Africa ,Low income,2019,843.71
+SLV,El Salvador,Latin America & Caribbean ,Upper middle income,2019,4320.12
+SMR,San Marino,Europe & Central Asia,High income,2019,46627.0
+SOM,"Somalia, Fed. Rep.",Sub-Saharan Africa ,Low income,2019,539.95
+SRB,Serbia,Europe & Central Asia,Upper middle income,2019,7755.63
+STP,Sao Tome and Principe,Sub-Saharan Africa ,Lower middle income,2019,1935.29
+SUR,Suriname,Latin America & Caribbean ,Upper middle income,2019,6629.67
+SVK,Slovak Republic,Europe & Central Asia,High income,2019,19406.06
+SVN,Slovenia,Europe & Central Asia,High income,2019,25814.17
+SWE,Sweden,Europe & Central Asia,High income,2019,51648.99
+SWZ,Eswatini,Sub-Saharan Africa ,Lower middle income,2019,3913.15
+SXM,Sint Maarten (Dutch part),Latin America & Caribbean ,High income,2019,34861.47
+SYC,Seychelles,Sub-Saharan Africa ,High income,2019,19141.51
+SYR,Syrian Arab Republic,"Middle East, North Africa, Afghanistan & Pakistan",Low income,2019,1109.54
+TCA,Turks and Caicos Islands,Latin America & Caribbean ,High income,2019,31780.52
+TCD,Chad,Sub-Saharan Africa ,Low income,2019,893.34
+TGO,Togo,Sub-Saharan Africa ,Lower middle income,2019,917.72
+THA,Thailand,East Asia & Pacific,Upper middle income,2019,7605.7
+TJK,Tajikistan,Europe & Central Asia,Lower middle income,2019,871.02
+TKM,Turkmenistan,Europe & Central Asia,Upper middle income,2019,4365.12
+TLS,Timor-Leste,East Asia & Pacific,Lower middle income,2019,1562.36
+TON,Tonga,East Asia & Pacific,Upper middle income,2019,4788.83
+TTO,Trinidad and Tobago,Latin America & Caribbean ,High income,2019,17212.61
+TUN,Tunisia,"Middle East, North Africa, Afghanistan & Pakistan",Lower middle income,2019,3528.87
+TUR,Turkiye,Europe & Central Asia,Upper middle income,2019,9395.23
+TUV,Tuvalu,East Asia & Pacific,Upper middle income,2019,5058.85
+TZA,Tanzania,Sub-Saharan Africa ,Lower middle income,2019,1063.32
+UGA,Uganda,Sub-Saharan Africa ,Low income,2019,822.17
+UKR,Ukraine,Europe & Central Asia,Upper middle income,2019,3619.86
+URY,Uruguay,Latin America & Caribbean ,High income,2019,18315.74
+USA,United States,North America,High income,2019,65227.96
+UZB,Uzbekistan,Europe & Central Asia,Lower middle income,2019,2128.66
+VCT,St. Vincent and the Grenadines,Latin America & Caribbean ,Upper middle income,2019,8740.59
+VEN,"Venezuela, RB",Latin America & Caribbean ,Lower middle income,2019,2523.12
+VIR,Virgin Islands (U.S.),Latin America & Caribbean ,High income,2019,38633.53
+VNM,Viet Nam,East Asia & Pacific,Upper middle income,2019,3440.9
+VUT,Vanuatu,East Asia & Pacific,Lower middle income,2019,3635.62
+WSM,Samoa,East Asia & Pacific,Upper middle income,2019,4351.94
+XKX,Kosovo,Europe & Central Asia,Upper middle income,2019,4415.7
+ZAF,South Africa,Sub-Saharan Africa ,Upper middle income,2019,6533.71
+ZMB,Zambia,Sub-Saharan Africa ,Lower middle income,2019,1258.99
+ZWE,Zimbabwe,Sub-Saharan Africa ,Lower middle income,2019,2184.52
