@@ -521,7 +521,7 @@ Thus, $\hat{\beta}_0$ is also an **unbiased estimator** of $\beta_0$.
 
 ---
 
-## Proof of OLS Consistency
+## \textcolor{red}{Proof of OLS Consistency}
 
 An estimator is **consistent** if it converges in probability to the true population parameter as the sample size $n \to \infty$:
 $$
