@@ -1,0 +1,398 @@
+---
+title: "Recitation 3"
+subtitle: "ECON UN3412: Econometrics"
+author: "Faiz Essa"
+date: today
+date-format: "MMMM D, YYYY"
+format:
+  pdf:
+    documentclass: article
+    papersize: letter
+    geometry:
+      - margin=1in
+    fontsize: 11pt
+    linestretch: 1.15
+    colorlinks: true
+    linkcolor: NavyBlue
+    urlcolor: NavyBlue
+    citecolor: NavyBlue
+    number-sections: true
+    number-depth: 2
+    header-includes:
+      - '\usepackage{amsmath, amssymb, mathtools}'
+      - '\usepackage{fancyhdr}'
+      - '\usepackage{tikz}'
+      - '\usetikzlibrary{calc, arrows.meta}'
+      - '\pagestyle{fancy}'
+      - '\fancyhf{}'
+      - '\lhead{\footnotesize \textsc{ECON UN3412: Econometrics}}'
+      - '\rhead{\footnotesize \textsc{Recitation 3}}'
+      - '\cfoot{\footnotesize \thepage}'
+      - '\renewcommand{\headrulewidth}{0.4pt}'
+---
+
+# Sampling Distribution & Variance of the OLS Estimator
+
+In Recitation 2, we showed that the Ordinary Least Squares (OLS) slope estimator $\hat{\beta}_1$ is **unbiased** ($\mathbb{E}[\hat{\beta}_1] = \beta_1$) and **consistent** ($\hat{\beta}_1 \xrightarrow{p} \beta_1$). 
+
+However, unbiasedness only tells us where the sampling distribution is centered across repeated hypothetical samples. To perform **statistical inference**---such as constructing confidence intervals and testing hypotheses like $H_0: \beta_1 = 0$---we must know the **spread** (variance) and the **asymptotic shape** of this sampling distribution.
+
+---
+
+## The Regression Model & Least Squares Assumptions
+
+Consider the bivariate linear regression model:
+$$
+Y_i = \beta_0 + \beta_1 X_i + u_i, \quad i = 1, \dots, n
+$$
+where $Y_i$ is the dependent variable, $X_i$ is the regressor, and $u_i$ is the error term collecting all other unobserved factors influencing $Y_i$.
+
+Our analysis relies on the three core **Least Squares Assumptions (LSAs)**:
+
+> **Least Squares Assumptions (LSA 1--3):**
+> 
+> 1. **LSA 1 (Conditional Mean Zero):** 
+>    $$
+>    \mathbb{E}[u_i \mid X_i] = 0 \implies \operatorname{Corr}(X_i, u_i) = 0
+>    $$
+>    The error term has a mean of zero conditional on $X_i$. This guarantees exogeneity (no omitted variable bias).
+>
+> 2. **LSA 2 (i.i.d. Sampling):** 
+>    $$
+>    (X_1, Y_1), \, (X_2, Y_2), \, \dots, \, (X_n, Y_n) \quad \text{are independently and identically distributed (i.i.d.)}
+>    $$
+>    This holds when data are collected via simple random sampling from the population of interest.
+>
+> 3. **LSA 3 (Large Outliers are Rare):** 
+>    $$
+>    \mathbb{E}[X_i^4] < \infty \quad \text{and} \quad \mathbb{E}[u_i^4] < \infty
+>    $$
+>    Nonzero, finite fourth moments guarantee that extreme outliers do not dominate the sample moments, allowing us to invoke the Central Limit Theorem.
+
+---
+
+## Recap: The OLS Estimation Error
+
+Recall from Recitation 2 that the OLS formula for the slope is:
+$$
+\hat{\beta}_1 = \frac{\sum_{i=1}^n (X_i - \bar{X})(Y_i - \bar{Y})}{\sum_{i=1}^n (X_i - \bar{X})^2}
+$$
+Substituting $Y_i - \bar{Y} = \beta_1 (X_i - \bar{X}) + (u_i - \bar{u})$ yields:
+$$
+\hat{\beta}_1 = \beta_1 \frac{\sum_{i=1}^n (X_i - \bar{X})^2}{\sum_{i=1}^n (X_i - \bar{X})^2} + \frac{\sum_{i=1}^n (X_i - \bar{X})(u_i - \bar{u})}{\sum_{i=1}^n (X_i - \bar{X})^2}
+$$
+Because $\sum_{i=1}^n (X_i - \bar{X})\bar{u} = \bar{u}\sum_{i=1}^n (X_i - \bar{X}) = 0$, the estimation error simplifies to:
+$$
+\hat{\beta}_1 - \beta_1 = \frac{\sum_{i=1}^{n} (X_i - \bar{X}) u_i}{\sum_{i=1}^{n} (X_i - \bar{X})^2}
+$$
+
+---
+
+## Step-by-Step Derivation of $\operatorname{Var}(\hat{\beta}_1)$ 
+
+To derive the variance of $\hat{\beta}_1$ in large samples, we follow the step-by-step method presented in class:
+
+### Step 1: Normalize Numerator and Denominator by Sample Size
+
+Divide both the numerator and the denominator of the estimation error by the sample size $n$:
+$$
+\hat{\beta}_1 - \beta_1 = \frac{\frac{1}{n}\sum_{i=1}^{n} (X_i - \bar{X}) u_i}{\frac{1}{n}\sum_{i=1}^{n} (X_i - \bar{X})^2}
+$$
+
+### Step 2: Define the Composite Error Term $v_i$
+
+Define the random variable:
+$$
+v_i \equiv (X_i - \bar{X}) u_i
+$$
+*(In large samples, replacing sample averages with population means gives $v_i \approx (X_i - \mu_X) u_i$.)*
+
+The numerator is simply the sample average of these $v_i$ terms, which we denote by $\bar{v}$:
+$$
+\bar{v} = \frac{1}{n}\sum_{i=1}^{n} v_i
+$$
+
+### Step 3: Large-Sample Approximation of the Denominator
+
+Consider the denominator, which is the sample variance of $X$ (denoted $s_X^2$):
+$$
+s_X^2 = \frac{1}{n}\sum_{i=1}^{n} (X_i - \bar{X})^2
+$$
+By the **Law of Large Numbers (LLN)** and LSA 2 & 3, as $n$ grows large:
+$$
+s_X^2 \xrightarrow{p} \operatorname{Var}(X_i) = \sigma_X^2
+$$
+In large samples, $s_X^2$ has negligible sampling variability and converges to the **constant** population variance $\sigma_X^2$. 
+
+Replacing the random denominator with this constant gives the large-sample approximation:
+$$
+\hat{\beta}_1 - \beta_1 \approx \frac{\frac{1}{n}\sum_{i=1}^n v_i}{\sigma_X^2} = \frac{\bar{v}}{\sigma_X^2}
+$$
+
+### Step 4: Distribution and Variance of the Numerator $\bar{v}$
+
+Now examine the properties of $\bar{v} = \frac{1}{n}\sum_{i=1}^n v_i$:
+
+1. **Mean of $v_i$:** By LSA 1 ($\mathbb{E}[u_i \mid X_i] = 0$) and the Law of Iterated Expectations:
+   $$
+   \mathbb{E}[v_i] = \mathbb{E}\left[(X_i - \mu_X)u_i\right] = \mathbb{E}\left[(X_i - \mu_X)\underbrace{\mathbb{E}[u_i \mid X_i]}_{=0}\right] = 0
+   $$
+   Therefore, $\mathbb{E}[\bar{v}] = 0$.
+
+2. **Variance of $v_i$:** Denote the population variance of $v_i$ by $\sigma_v^2$:
+   $$
+   \sigma_v^2 \equiv \operatorname{Var}(v_i) = \operatorname{Var}\left((X_i - \mu_X)u_i\right)
+   $$
+
+3. **Variance of the Sample Average $\bar{v}$:** Because $(X_i, Y_i)$ are i.i.d. (LSA 2), the terms $v_i$ are also i.i.d. The variance of a sample mean of i.i.d. random variables is the individual variance divided by $n$:
+   $$
+   \sigma_{\bar{v}}^2 \equiv \operatorname{Var}(\bar{v}) = \operatorname{Var}\left(\frac{1}{n}\sum_{i=1}^n v_i\right) = \frac{\sigma_v^2}{n}
+   $$
+
+4. **Central Limit Theorem (CLT):** By the Central Limit Theorem, the normalized average $\bar{v}$ is asymptotically normally distributed:
+   $$
+   \bar{v} \stackrel{a}{\sim} \mathcal{N}\left(0, \, \sigma_{\bar{v}}^2\right) = \mathcal{N}\left(0, \, \frac{\sigma_v^2}{n}\right)
+   $$
+
+### Step 5: Applying the Variance Scaling Property
+
+We now apply the scaling property of variances ($\operatorname{Var}(c Z) = c^2 \operatorname{Var}(Z)$ for any constant $c$). 
+
+Since $\sigma_X^2$ in the denominator acts as a fixed constant in large samples:
+$$
+\begin{aligned}
+\operatorname{Var}(\hat{\beta}_1) &= \operatorname{Var}(\hat{\beta}_1 - \beta_1) \\[6pt]
+&\approx \operatorname{Var}\left( \frac{\bar{v}}{\sigma_X^2} \right) \\[6pt]
+&= \frac{1}{\left(\sigma_X^2\right)^2} \operatorname{Var}(\bar{v}) \\[6pt]
+&= \frac{1}{\left(\sigma_X^2\right)^2} \sigma_{\bar{v}}^2 \\[6pt]
+&= \frac{1}{\left(\sigma_X^2\right)^2} \left(\frac{\sigma_v^2}{n}\right)
+\end{aligned}
+$$
+
+Rearranging terms yields the fundamental formula for the variance of the OLS estimator:
+
+$$
+\boxed{\operatorname{Var}(\hat{\beta}_1) = \frac{1}{n} \frac{\sigma_v^2}{\left(\sigma_X^2\right)^2} = \frac{\sigma_v^2}{n \sigma_X^4}}
+$$
+where:
+$$
+\sigma_v^2 = \operatorname{Var}\left((X_i - \mu_X)u_i\right) \quad \text{and} \quad \sigma_X^2 = \operatorname{Var}(X_i)
+$$
+
+Combining this with asymptotic normality gives the **asymptotic sampling distribution of $\hat{\beta}_1$**:
+
+$$
+\boxed{\hat{\beta}_1 \stackrel{a}{\sim} \mathcal{N}\left(\beta_1, \, \frac{1}{n}\frac{\sigma_v^2}{\left(\sigma_X^2\right)^2}\right)}
+$$
+
+---
+
+## Homoskedasticity vs. Heteroskedasticity
+
+```{=latex}
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[scale=0.9, >=Stealth]
+    % --- Panel A: Homoskedasticity ---
+    \begin{scope}[shift={(0,0)}]
+        \draw[->, thick] (0,0) -- (6.5,0) node[right] {$X$};
+        \draw[->, thick] (0,0) -- (0,5) node[above] {$Y$};
+        \node at (3.2, 5.4) {\textbf{(a) Homoskedastic Errors}};
+        \node[text width=5.5cm, align=center, font=\footnotesize, text=gray!80!black] at (3.2, -0.6) {$\operatorname{Var}(u_i \mid X_i) = \sigma_u^2$ (Constant band)};
+
+        % Regression Line
+        \draw[thick, NavyBlue] (0.8, 1.0) -- (5.8, 4.2);
+
+        % Constant dispersion band
+        \draw[dashed, NavyBlue!40] (0.8, 0.3) -- (5.8, 3.5);
+        \draw[dashed, NavyBlue!40] (0.8, 1.7) -- (5.8, 4.9);
+
+        % Scatter points (blue)
+        \foreach \x/\y in {
+            1.2/1.4, 1.4/0.8, 1.6/1.9, 1.8/1.5,
+            2.3/2.3, 2.5/1.7, 2.7/2.6, 2.8/2.1,
+            3.4/2.9, 3.5/2.4, 3.7/3.3, 3.9/2.8,
+            4.4/3.7, 4.6/3.1, 4.8/4.0, 5.0/3.6,
+            5.3/4.2, 5.5/3.8, 5.6/4.5
+        } {
+            \fill[NavyBlue] (\x, \y) circle (1.8pt);
+        }
+    \end{scope}
+
+    % --- Panel B: Heteroskedasticity ---
+    \begin{scope}[shift={(8,0)}]
+        \draw[->, thick] (0,0) -- (6.5,0) node[right] {$X$};
+        \draw[->, thick] (0,0) -- (0,5) node[above] {$Y$};
+        \node at (3.2, 5.4) {\textbf{(b) Heteroskedastic Errors}};
+        \node[text width=5.5cm, align=center, font=\footnotesize, text=gray!80!black] at (3.2, -0.6) {$\operatorname{Var}(u_i \mid X_i)$ increases with $X_i$ (Fan shape)};
+
+        % Regression Line
+        \draw[thick, red!80!black] (0.8, 1.0) -- (5.8, 4.2);
+
+        % Expanding dispersion band (fan)
+        \draw[dashed, red!40] (0.8, 0.85) -- (5.8, 2.2);
+        \draw[dashed, red!40] (0.8, 1.15) -- (5.8, 6.2);
+
+        % Scatter points (purple/red)
+        \foreach \x/\y in {
+            1.1/1.25, 1.3/1.1, 1.5/1.55, 1.7/1.3,
+            2.2/1.7, 2.4/2.25, 2.6/1.8, 2.7/2.35,
+            3.3/3.1, 3.5/2.1, 3.6/3.4, 3.8/2.5,
+            4.3/4.1, 4.5/2.6, 4.7/4.4, 4.9/3.0,
+            5.2/4.9, 5.4/2.4, 5.6/4.7, 5.7/3.3
+        } {
+            \fill[purple!80!black] (\x, \y) circle (1.8pt);
+        }
+    \end{scope}
+\end{tikzpicture}
+\caption{Homoskedastic vs. Heteroskedastic error distributions around the regression line.}
+\label{fig:homo-vs-hetero}
+\end{figure}
+```
+
+### 1. The Homoskedastic Case (Special Case)
+
+Errors are **homoskedastic** if the conditional variance of $u_i$ given $X_i$ is constant across all values of $X_i$:
+$$
+\operatorname{Var}(u_i \mid X_i) = \sigma_u^2 \quad \text{for all } i
+$$
+
+Under homoskedasticity, we can simplify the numerator variance $\sigma_v^2$:
+$$
+\begin{aligned}
+\sigma_v^2 &= \mathbb{E}\left[(X_i - \mu_X)^2 u_i^2\right] \\[4pt]
+&= \mathbb{E}\left[(X_i - \mu_X)^2 \mathbb{E}[u_i^2 \mid X_i]\right] \quad \text{(by LIE)} \\[4pt]
+&= \mathbb{E}\left[(X_i - \mu_X)^2 \sigma_u^2\right] \quad \text{(since } \operatorname{Var}(u_i \mid X_i) = \sigma_u^2\text{)} \\[4pt]
+&= \sigma_u^2 \, \mathbb{E}\left[(X_i - \mu_X)^2\right] \\[4pt]
+&= \sigma_u^2 \, \sigma_X^2
+\end{aligned}
+$$
+
+Substituting $\sigma_v^2 = \sigma_u^2 \sigma_X^2$ into the general variance formula:
+$$
+\operatorname{Var}_{\text{homo}}(\hat{\beta}_1) = \frac{\sigma_u^2 \sigma_X^2}{n \left(\sigma_X^2\right)^2} = \frac{\sigma_u^2}{n \sigma_X^2}
+$$
+
+$$
+\boxed{\operatorname{Var}_{\text{homo}}(\hat{\beta}_1) = \frac{\sigma_u^2}{n \sigma_X^2}}
+$$
+
+### 2. The Heteroskedastic Case (General Case)
+
+Errors are **heteroskedastic** if the conditional variance depends on $X_i$:
+$$
+\operatorname{Var}(u_i \mid X_i) = \sigma_u^2(X_i) \neq \text{constant}
+$$
+
+In this case, we cannot factor out $\sigma_u^2$ from the expectation, so $\sigma_v^2 \neq \sigma_u^2 \sigma_X^2$. We must retain the full **heteroskedasticity-robust** variance formula:
+$$
+\boxed{\operatorname{Var}_{\text{robust}}(\hat{\beta}_1) = \frac{1}{n}\frac{\sigma_v^2}{\sigma_X^4} = \frac{1}{n} \frac{\operatorname{Var}\left((X_i - \mu_X)u_i\right)}{\left(\operatorname{Var}(X_i)\right)^2}}
+$$
+
+---
+
+### Estimating the Variances in Practice: Standard vs. Robust Estimators
+
+The population formulas derived above depend on the **unobserved errors** $u_i$ and the **unknown population moments** $\sigma_u^2, \sigma_v^2, \sigma_X^2$. In empirical applications, we estimate these variances by replacing $u_i$ with the **OLS residuals** $\hat{u}_i = Y_i - \hat{Y}_i$ and population moments with their sample counterparts:
+
+1. **Standard (Homoskedastic) Variance Estimator:**
+   Assuming homoskedasticity, we estimate the error variance $\sigma_u^2$ using the squared **Standard Error of the Regression (SER)**:
+   $$
+   s_u^2 \equiv \text{SER}^2 = \frac{1}{n-2}\sum_{i=1}^n \hat{u}_i^2 = \frac{\text{SSR}}{n-2}
+   $$
+   Substituting $s_u^2$ into $\operatorname{Var}_{\text{homo}}(\hat{\beta}_1) = \frac{\sigma_u^2}{\sum_{i=1}^n (X_i - \bar{X})^2}$ gives the **standard (classical) variance estimator**:
+   $$
+   \boxed{\widehat{\operatorname{Var}}_{\text{homo}}(\hat{\beta}_1) = \frac{s_u^2}{\sum_{i=1}^n (X_i - \bar{X})^2}} \implies \boxed{\operatorname{SE}_{\text{homo}}(\hat{\beta}_1) = \frac{s_u}{\sqrt{\sum_{i=1}^n (X_i - \bar{X})^2}}}
+   $$
+   *Limitation:* This estimator is valid **only if** the homoskedasticity assumption holds. If errors are heteroskedastic, $\widehat{\operatorname{Var}}_{\text{homo}}(\hat{\beta}_1)$ is biased and inconsistent, causing test statistics to be invalid.
+
+2. **Heteroskedasticity-Robust Variance Estimator (Eicker-Huber-White / Sandwich Estimator):**
+   Without assuming homoskedasticity, we directly estimate $\sigma_v^2 = \operatorname{Var}((X_i - \mu_X)u_i)$ using the residuals $\hat{v}_i = (X_i - \bar{X})\hat{u}_i$. This yields the **heteroskedasticity-robust variance estimator**:
+   $$
+   \boxed{\widehat{\operatorname{Var}}_{\text{robust}}(\hat{\beta}_1) = \frac{\sum_{i=1}^{n} (X_i - \bar{X})^2 \hat{u}_i^2}{\left[\sum_{i=1}^{n} (X_i - \bar{X})^2\right]^2}} \implies \boxed{\operatorname{SE}_{\text{robust}}(\hat{\beta}_1) = \frac{\sqrt{\sum_{i=1}^{n} (X_i - \bar{X})^2 \hat{u}_i^2}}{\sum_{i=1}^{n} (X_i - \bar{X})^2}}
+   $$
+   *Advantage:* This estimator is **consistent whether the errors are homoskedastic or heteroskedastic**. Because heteroskedasticity is common in economic data, modern empirical research almost universally defaults to robust standard errors.
+
+> **Hypothesis Testing with the $t$-Statistic:**
+> With an estimator for the standard error $\operatorname{SE}(\hat{\beta}_1)$ in hand (ideally heteroskedasticity-robust), we can now perform statistical inference as usual. Under the null hypothesis $H_0: \beta_1 = \beta_{1,0}$ (most commonly $H_0: \beta_1 = 0$), the $t$-statistic:
+> $$
+> t = \frac{\hat{\beta}_1 - \beta_{1,0}}{\operatorname{SE}(\hat{\beta}_1)} \stackrel{a}{\sim} \mathcal{N}(0, 1)
+> $$
+> is asymptotically standard normal by the Central Limit Theorem. We can therefore carry out hypothesis tests (e.g., rejecting $H_0$ at the 5% significance level if $|t| > 1.96$), compute $p$-values, and construct asymptotic confidence intervals:
+> $$
+> \hat{\beta}_1 \pm z_{1 - \alpha/2} \times \operatorname{SE}(\hat{\beta}_1)
+> $$
+> in the standard fashion.
+
+---
+
+# Omitted Variable Bias (OVB)
+
+Least Squares Assumption 1 requires that the error term and the regressor are uncorrelated:
+$$
+\operatorname{Corr}(X_i, u_i) = 0 \quad (\text{or } \mathbb{E}[u_i \mid X_i] = 0)
+$$
+When this assumption is violated, the OLS estimator is **biased and inconsistent**. The leading cause of this violation in observational data is **Omitted Variable Bias (OVB)**.
+
+---
+
+## General Framework
+
+Consider the linear regression model:
+$$
+Y_i = \beta_0 + \beta_1 X_i + u_i
+$$
+where $u_i$ collects all other unobserved factors that influence $Y_i$. 
+
+If there is an omitted variable $Z_i$ that affects $Y_i$, that variable is **hiding in the error term** $u_i$. Suppose we estimate the single-variable model of $Y_i$ on $X_i$ by OLS, ignoring $Z_i$.
+
+Recall the formula for the OLS estimation error:
+$$
+\hat{\beta}_1 - \beta_1 = \frac{\frac{1}{n}\sum_{i=1}^{n} (X_i - \bar{X})(u_i - \bar{u})}{\frac{1}{n}\sum_{i=1}^{n} (X_i - \bar{X})^2}
+$$
+
+In large samples (by the Law of Large Numbers):
+$$
+\frac{1}{n}\sum_{i=1}^n (X_i - \bar{X})(u_i - \bar{u}) \xrightarrow{p} \operatorname{Cov}(X_i, u_i) = \sigma_{Xu}
+$$
+$$
+\frac{1}{n}\sum_{i=1}^n (X_i - \bar{X})^2 \xrightarrow{p} \operatorname{Var}(X_i) = \sigma_X^2
+$$
+
+Therefore:
+$$
+\hat{\beta}_1 - \beta_1 \xrightarrow{p} \frac{\sigma_{Xu}}{\sigma_X^2}
+$$
+
+Using the definition of correlation $\rho_{Xu} = \operatorname{Corr}(X_i, u_i) = \frac{\sigma_{Xu}}{\sigma_X \sigma_u} \implies \sigma_{Xu} = \sigma_X \sigma_u \rho_{Xu}$, we rewrite the ratio:
+$$
+\frac{\sigma_{Xu}}{\sigma_X^2} = \frac{\sigma_X \sigma_u \rho_{Xu}}{\sigma_X^2} = \left(\frac{\sigma_u}{\sigma_X}\right) \rho_{Xu}
+$$
+
+This gives the fundamental **Omitted Variable Bias formula**:
+
+$$
+\boxed{\hat{\beta}_1 \xrightarrow{p} \beta_1 + \left(\frac{\sigma_u}{\sigma_X}\right) \rho_{Xu}}
+$$
+
+---
+
+## The Two Conditions for Omitted Variable Bias
+
+Because standard deviations are strictly positive ($\sigma_u > 0$ and $\sigma_X > 0$), $\hat{\beta}_1$ is biased and inconsistent whenever $\rho_{Xu} \neq 0$. 
+
+An omitted factor $Z$ creates omitted variable bias if and only if **both** conditions hold:
+
+1. **$Z$ is a determinant of $Y$:** $Z$ affects $Y$, meaning it is part of the error term $u$.
+2. **$Z$ is correlated with $X$:** $\operatorname{Corr}(X, Z) \neq 0$, which makes $X$ correlated with the error term $u$ ($\rho_{Xu} \neq 0$).
+
+* If $Z$ is not a determinant of $Y$, it does not enter $u$.
+* If $Z$ is uncorrelated with $X$ ($\operatorname{Corr}(X, Z) = 0$), then $\rho_{Xu} = 0$, and $\hat{\beta}_1 \xrightarrow{p} \beta_1$ remains unbiased and consistent.
+
+When both conditions hold, $\rho_{Xu} \neq 0$, and the sign of the bias is determined by the sign of $\rho_{Xu}$:
+$$
+\operatorname{sgn}(\text{Bias}) = \operatorname{sgn}(\rho_{Xu})
+$$
+
+
+
