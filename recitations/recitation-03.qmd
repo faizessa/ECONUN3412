@@ -394,5 +394,216 @@ $$
 \operatorname{sgn}(\text{Bias}) = \operatorname{sgn}(\rho_{Xu})
 $$
 
+### Determining the Direction of Bias
+
+Suppose the true relationship is given by the two-variable model $Y_i = \beta_0 + \beta_1 X_{1i} + \beta_2 X_{2i} + \tilde{u}_i$. If we omit $X_{2i}$ and run the simple regression of $Y_i$ on $X_{1i}$, the omitted variable $X_{2i}$ enters the error term ($u_i = \beta_2 X_{2i} + \tilde{u}_i$). 
+
+The correlation between $X_{1i}$ and the error term is then determined by the product of the effect of $X_{2i}$ on $Y_i$ ($\beta_2$) and the correlation between the two regressors:
+$$
+\operatorname{sgn}(\text{Bias}) = \operatorname{sgn}(\beta_2) \times \operatorname{sgn}\left(\operatorname{Corr}(X_{1i}, X_{2i})\right)
+$$
+
+| | $\operatorname{Corr}(X_{1i}, X_{2i}) > 0$ | $\operatorname{Corr}(X_{1i}, X_{2i}) < 0$ |
+| :--- | :---: | :---: |
+| **$\beta_2 > 0$** ($X_2$ positively affects $Y$) | **Positive Bias** ($\hat{\beta}_1$ overstates $\beta_1$) | **Negative Bias** ($\hat{\beta}_1$ understates $\beta_1$) |
+| **$\beta_2 < 0$** ($X_2$ negatively affects $Y$) | **Negative Bias** ($\hat{\beta}_1$ understates $\beta_1$) | **Positive Bias** ($\hat{\beta}_1$ overstates $\beta_1$) |
+
+---
+
+### The Solution to OVB: Multiple Regression
+
+The direct econometric remedy for omitted variable bias is **Multiple Regression**: explicitly include the omitted confounding variable in the regression model:
+$$
+Y_i = \beta_0 + \beta_1 X_{1i} + \beta_2 X_{2i} + u_i
+$$
+By including $X_{2i}$, it is removed from the error term $u_i$. The coefficient $\beta_1$ now estimates the **partial effect** (or *ceteris paribus* effect) of $X_{1i}$ on $Y_i$, **holding $X_{2i}$ constant**.
+
+---
+
+# Multiple Regression & Multicollinearity
+
+While multiple regression solves omitted variable bias, introducing multiple regressors gives rise to a critical inference issue: **Multicollinearity**.
+
+---
+
+When evaluating the OLS estimator $\hat{\beta}_1$ for a variable of interest $X_1$, we face two distinct econometric goals:
+
+1. **Unbiasedness & Consistency ($\mathbb{E}[\hat{\beta}_1] = \beta_1$, $\hat{\beta}_1 \xrightarrow{p} \beta_1$):**
+   * *Primary Threat:* **Omitted Variable Bias (OVB)**.
+   * *Solution:* **Multiple Regression** (conditioning on observable confounders).
+
+2. **Accurate Standard Errors & Statistical Precision:**
+   * *Threat 1:* **Heteroskedasticity** $\implies$ *Solution:* Heteroskedasticity-robust standard errors.
+   * *Threat 2:* **Multicollinearity** $\implies$ *Consequence:* Inflated standard errors ($\operatorname{SE}(\hat{\beta}_1) \uparrow$), deflated $t$-statistics, and loss of statistical power (failure to reject $H_0: \beta_1 = 0$).
+
+---
+
+## Least Squares Assumptions for Multiple Regression
+
+For the multiple regression model with $k$ regressors:
+$$
+Y_i = \beta_0 + \beta_1 X_{1i} + \beta_2 X_{2i} + \dots + \beta_k X_{ki} + u_i, \quad i = 1, \dots, n
+$$
+the core **Least Squares Assumptions (LSAs)** are:
+
+> **Least Squares Assumptions (LSA 1--4):**
+>
+> 1. **LSA 1 (Conditional Mean Zero / Exogeneity):**
+>    $$
+>    \mathbb{E}[u_i \mid X_{1i}, X_{2i}, \dots, X_{ki}] = 0 \implies \operatorname{Corr}(X_{ji}, u_i) = 0 \quad \text{for all } j = 1, \dots, k
+>    $$
+> 2. **LSA 2 (i.i.d. Sampling):**
+>    $$
+>    (X_{1i}, X_{2i}, \dots, X_{ki}, Y_i), \, i = 1, \dots, n \quad \text{are independently and identically distributed (i.i.d.)}
+>    $$
+> 3. **LSA 3 (Large Outliers are Rare):**
+>    $$
+>    \mathbb{E}[X_{ji}^4] < \infty \quad \text{and} \quad \mathbb{E}[Y_i^4] < \infty \quad \text{for all } j = 1, \dots, k
+>    $$
+> 4. **LSA 4 (No Perfect Multicollinearity):**
+>    No regressor is constant, and **no regressor is a perfect linear function of other regressors**.
+
+Under LSAs 1--4, the OLS estimators are **unbiased** and **consistent**. Under homoskedasticity (LSA 5), the **Gauss-Markov Theorem** establishes that OLS is the **Best Linear Unbiased Estimator (BLUE)**.
+
+---
+
+## Perfect Multicollinearity
+
+### Definition & Theoretical Breakdown
+**Perfect multicollinearity** occurs when one of the regressors is an exact linear function of other regressors:
+$$
+X_{ki} = c_0 + c_1 X_{1i} + c_2 X_{2i} + \dots + c_{k-1} X_{k-1,i} \quad \text{for all } i
+$$
+where $c_0, c_1, \dots, c_{k-1}$ are constants.
+
+The slope coefficient $\beta_k$ measures the partial effect of varying $X_k$ **while holding all other regressors constant**. If $X_k$ is an exact linear combination of the other regressors, it is logically impossible for $X_k$ to vary while keeping the other regressors fixed.
+The OLS formulas involve division by zero (the normal equations have infinitely many solutions). The OLS estimators are **undefined and cannot be computed**.
+
+A common cause of perfect multicollinearity is the **Dummy Variable Trap**. When a categorical variable with $m$ mutually exclusive and exhaustive categories is represented by $m$ indicator variables:
+$$
+D_{1i} + D_{2i} + \dots + D_{mi} = 1 \quad \text{for all } i
+$$
+If an intercept $\beta_0$ and all $m$ dummy variables are included simultaneously, the sum of the dummies perfectly matches the constant regressor ($1$).
+
+**Resolutions:**
+
+1. **Omit One Dummy Variable (The Benchmark / Reference Category):** Include $m - 1$ dummies and an intercept $\beta_0$. The intercept becomes the expected value of $Y$ for the omitted category, and each dummy coefficient measures the differential relative to the base group.
+2. **Omit the Intercept:** Include all $m$ dummies and suppress the intercept ($\beta_0 = 0$). Each coefficient directly equals the group mean.
+
+---
+
+## Imperfect Multicollinearity
+
+### Definition & Crucial Distinction
+**Imperfect multicollinearity** occurs when two or more regressors are **highly, but not perfectly, correlated** (e.g., $|\operatorname{Corr}(X_1, X_2)|$ is high).
 
 
+* Imperfect multicollinearity is **NOT a violation of LSA 4**.
+
+* **OLS remains unbiased, consistent, and BLUE:**
+   $$
+   \mathbb{E}[\hat{\beta}_j] = \beta_j \quad \text{and} \quad \hat{\beta}_j \xrightarrow{p} \beta_j
+   $$
+* It is not an analytical flaw of the estimator; it is an inherent **data / sample precision problem** (*micronumerosity*---having limited independent information in the sample to separate two entangled variables).
+
+---
+
+### The Multiple Regression Variance Formula
+For the two-regressor model $Y_i = \beta_0 + \beta_1 X_{1i} + \beta_2 X_{2i} + u_i$ under homoskedasticity:
+$$
+\boxed{\operatorname{Var}(\hat{\beta}_1) = \frac{\sigma_u^2}{n \, \sigma_{X_1}^2 \left(1 - \rho_{12}^2\right)}}
+$$
+where $\rho_{12} = \operatorname{Corr}(X_{1i}, X_{2i})$.
+
+In the general $k$-regressor model:
+$$
+\boxed{\operatorname{Var}(\hat{\beta}_j) = \frac{1}{1 - R_j^2} \times \frac{\sigma_u^2}{n \, \sigma_{X_j}^2} = \text{VIF}_j \times \frac{\sigma_u^2}{n \, \sigma_{X_j}^2}}
+$$
+where $R_j^2$ is the $R^2$ from regressing $X_j$ on all other regressors, and $\text{VIF}_j \equiv \frac{1}{1 - R_j^2}$ is the **Variance Inflation Factor**.
+
+---
+
+### Intuition
+To estimate the partial effect $\beta_1$ holding $X_2$ constant, OLS uses only the variation in $X_1$ that is **independent** of $X_2$.
+
+As the correlation between regressors approaches 1:
+$$
+|\rho_{12}| \to 1 \implies \left(1 - \rho_{12}^2\right) \to 0 \implies \operatorname{Var}(\hat{\beta}_1) \to \infty \implies \operatorname{SE}(\hat{\beta}_1) \to \infty
+$$
+When regressors move tightly together, the sample contains almost no observations where $X_1$ varies while $X_2$ stays constant. Without independent variation, OLS cannot separate their individual effects, causing the **sampling variance to explode**.
+
+---
+
+### Consequences for Hypothesis Testing & Inference
+
+1. **Inflated Standard Errors:** $\operatorname{SE}(\hat{\beta}_1) = \sqrt{\operatorname{Var}(\hat{\beta}_1)}$ becomes very large.
+2. **Deflated $t$-Statistics:**
+   $$
+   t = \frac{\hat{\beta}_1 - 0}{\operatorname{SE}(\hat{\beta}_1)} \downarrow
+   $$
+   Because the inflated standard error sits in the denominator, the $t$-statistic collapses toward zero.
+3. **Loss of Statistical Power (Type II Error):** Even if $X_1$ has a true nonzero effect ($\beta_1 \neq 0$), the empirical $t$-statistic is unlikely to exceed the critical value ($|t| < 1.96$). We fail to reject $H_0: \beta_1 = 0$, falsely concluding the variable is "insignificant."
+4. **Wide Confidence Intervals:** The interval $\hat{\beta}_1 \pm 1.96 \times \operatorname{SE}(\hat{\beta}_1)$ becomes too wide to provide useful guidance.
+5. **Classic Diagnostic Symptom:** The overall regression has a high $R^2$ and a statistically significant joint $F$-test, yet the individual regressors have statistically insignificant $t$-statistics.
+
+---
+
+### The OVB vs. Multicollinearity Trade-off
+
+When faced with inflated standard errors and low $t$-statistics, researchers must **never drop a relevant confounding variable** just to make remaining variables statistically significant:
+
+* **Multicollinearity affects precision only:** The OLS estimator remains **unbiased and consistent**.
+* **Dropping a relevant variable creates Omitted Variable Bias:** Violates LSA 1 ($\mathbb{E}[u \mid X] \neq 0$), making the estimator **biased and inconsistent**.
+* **Econometric Principle:** **Never trade bias for variance.** An unbiased estimator with a wide confidence interval is far superior to a biased estimator that is precisely wrong.
+
+**Legitimate Remedies:**
+
+1. **Increase Sample Size ($n$):** Because $\operatorname{Var}(\hat{\beta}_1) \propto \frac{1}{n}$, collecting a larger sample directly shrinks standard errors and overcomes multicollinearity.
+2. **Joint Hypothesis Testing ($F$-Tests):** Test the joint significance of collinear variables ($H_0: \beta_1 = 0 \text{ and } \beta_2 = 0$). The joint $F$-test often detects statistical significance even when individual $t$-tests cannot.
+3. **Collinear Control Variables:** Collinearity between two control variables included solely to prevent OVB does not inflate the standard error of the policy variable of interest, as long as the policy variable itself is not collinear with them.
+
+---
+
+# Measures of Fit in Multiple Regression
+
+## The Standard Error of the Regression (SER)
+
+The SER estimates the standard deviation of the error term $u_i$. In multiple regression, we adjust the degrees of freedom for the $k + 1$ estimated parameters ($\beta_0, \beta_1, \dots, \beta_k$):
+$$
+s_u \equiv \text{SER} = \sqrt{\frac{\text{SSR}}{n - k - 1}} = \sqrt{\frac{\sum_{i=1}^n \hat{u}_i^2}{n - k - 1}}
+$$
+where $n - k - 1$ is the residual degrees of freedom. The SER is measured in the exact same units as the dependent variable $Y$.
+
+---
+
+## $R^2$ in Multiple Regression
+
+Recall the definition of the coefficient of determination:
+$$
+R^2 = \frac{\text{ESS}}{\text{TSS}} = 1 - \frac{\text{SSR}}{\text{TSS}} = 1 - \frac{\sum_{i=1}^n \hat{u}_i^2}{\sum_{i=1}^n (Y_i - \bar{Y})^2}
+$$
+
+* **Mathematical Property:** $R^2$ **never decreases** (and almost always increases) whenever an additional regressor is added to the model, **even if that regressor is completely unrelated to $Y$ or pure noise**.
+* **Why?** OLS chooses coefficients to minimize the Sum of Squared Residuals ($\text{SSR}$). Adding another regressor expands the set of choices over which OLS minimizes SSR. At worst, OLS can assign a coefficient of zero ($\hat{\beta}_{k+1} = 0$), so $\text{SSR}_{\text{new}} \le \text{SSR}_{\text{old}}$. Because $\text{TSS}$ depends only on $Y$ and remains fixed, $1 - \frac{\text{SSR}}{\text{TSS}}$ can never fall.
+* **Consequence:** $R^2$ cannot be used to evaluate whether adding a variable improves model specification.
+
+---
+
+## The Adjusted $R^2$ ($\bar{R}^2$)
+
+To fix this defect, the **Adjusted $R^2$** (denoted $\bar{R}^2$) penalizes the inclusion of additional regressors by dividing each sum of squares by its corresponding degrees of freedom:
+$$
+\boxed{\bar{R}^2 = 1 - \frac{\text{SSR} / (n - k - 1)}{\text{TSS} / (n - 1)} = 1 - \left(\frac{n - 1}{n - k - 1}\right) \frac{\text{SSR}}{\text{TSS}}}
+$$
+where:
+
+* $n$: sample size
+* $k$: number of regressors (excluding the constant term)
+* $\frac{n - 1}{n - k - 1} > 1$: the **degrees-of-freedom penalty factor** (which increases as more regressors $k$ are added)
+
+Alternatively, because $s_u^2 = \frac{\text{SSR}}{n - k - 1}$ is the sample variance of the residuals and $s_Y^2 = \frac{\text{TSS}}{n - 1}$ is the sample variance of $Y$:
+$$
+\bar{R}^2 = 1 - \frac{s_u^2}{s_Y^2}
+$$
+
+ $\bar{R}^2$ can be negative if the regressors explain very little variation in $Y$ and the penalty factor pushes the subtracted term above $1$.
