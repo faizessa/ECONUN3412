@@ -1,0 +1,125 @@
+---
+title: "Recitation 4"
+subtitle: "ECON UN3412: Econometrics"
+author: "Faiz Essa"
+date: today
+date-format: "MMMM D, YYYY"
+format:
+  pdf:
+    documentclass: article
+    papersize: letter
+    geometry:
+      - margin=1in
+    fontsize: 11pt
+    linestretch: 1.15
+    colorlinks: true
+    linkcolor: NavyBlue
+    urlcolor: NavyBlue
+    citecolor: NavyBlue
+    number-sections: true
+    number-depth: 2
+    header-includes:
+      - '\usepackage{amsmath, amssymb, mathtools}'
+      - '\usepackage{fancyhdr}'
+      - '\usepackage{tikz}'
+      - '\usetikzlibrary{calc, arrows.meta}'
+      - '\pagestyle{fancy}'
+      - '\fancyhf{}'
+      - '\lhead{\footnotesize \textsc{ECON UN3412: Econometrics}}'
+      - '\rhead{\footnotesize \textsc{Recitation 4}}'
+      - '\cfoot{\footnotesize \thepage}'
+      - '\renewcommand{\headrulewidth}{0.4pt}'
+---
+
+# Joint Significant Testing 
+Consider a liner model with 3 explanatory variables:
+
+$$
+Y_i = \beta_0 + \beta_1 X_{1i} + \beta_2 X_{2i} + \beta_3 X_{3i} + u_i.
+$${#eq-linear-model}
+
+Suppose we want to test a null hypothesis involving multiple coefficients at once, for example
+
+$$
+\begin{aligned}
+H_0&: \beta_1 = \beta_2 = 0 \\
+H_1&: \beta_1 \neq 0 \text{ or } \beta_2 \neq 0
+\end{aligned}
+$$ {#eq-joint-hypotheses}
+
+We will use an $F$-test for this purpose.
+
+## F-test with homoskedastic errors
+
+Consider a regression where we impose the restriction that $\beta_1 = \beta_2 = 0$. The *restricted* regression is 
+
+$$
+Y_i = \beta_0 + \beta_3 X_{3i} + u_i
+$${#eq-restricted-model}
+
+The *unrestricted* regression is given by @eq-linear-model. The F statistic is given by
+
+$$
+F = \frac{R_{unres}^2 - R_{res}^2}{q} / \frac{1 - R_{unres}^2}{n - k - 1}
+$$ {#eq-f-stat}
+
+where $R^2_{unres}$ and $R^2_{res}$ are the R-squared values from the unrestricted and restricted regressions, respectively, and $q=2$ is the number of restrictions, $n$ is the sample size, and $k=3$ is the number of regressors in the unrestricted regression (*excluding* the intercept).
+
+** INSERT STATA OUTPUT FROM CALIFORNIA CLASS SIZE DATA HERE **
+** STATA REPORTS HETEROSKEDASTICITY-ROBUST F-STAT **
+
+When both multiple coefficients are jointly significant, it motivates keeping both variables in the regression, despite potential concerns of
+multicollinearity inflating standard errors. 
+
+# Testing Single Restrictions on Multiple Parameters
+
+Now consider from @eq-linear-model we want to test the following:
+
+$$
+\begin{aligned}
+H_0&: \beta_1 = \beta_2 \\
+H_1&: \beta_1 \neq \beta_2
+\end{aligned}
+$$ {#eq-restricted-hypotheses-2}
+
+To test this hypothesis, we can rearrange it as 
+
+$$
+\begin{aligned}
+H_0&: \beta_1 - \beta_2 = 0 \\
+H_1&: \beta_1 - \beta_2 \neq 0
+\end{aligned}
+$$ {#eq-linear-model-rearranged}
+
+We can test this with a standard t-statistic:
+
+$$ t = \frac{\hat{\beta}_1 - \hat{\beta}_2}{se(\hat{\beta}_1 - \hat{\beta}_2)} 
+$$ {#eq-t-stat}
+
+Where $\operatorname{SE}(\hat{\beta}_1 - \hat{\beta}_2) = \sqrt{\operatorname{Var}(\hat{\beta}_1) + \operatorname{Var}(\hat{\beta}_2) - 2\operatorname{Cov}(\hat{\beta}_1, \hat{\beta}_2)}$. This requires the covariance term $\operatorname{Cov}(\hat{\beta}_1, \hat{\beta}_2)$, which is not typically reported in standard regression tables.
+
+### The Reparameterization Trick
+
+Instead of calculating the covariance by hand, we can rewrite the regression so that software directly estimates $\gamma_1 = \beta_1 - \beta_2$ along with its standard error.
+
+1. Define the parameter of interest:
+   $$\gamma_1 = \beta_1 - \beta_2 \implies \beta_1 = \gamma_1 + \beta_2$$
+
+2. Substitute $\beta_1 = \gamma_1 + \beta_2$ into the original model (@eq-linear-model):
+   $$
+   \begin{aligned}
+   Y_i &= \beta_0 + (\gamma_1 + \beta_2) X_{1i} + \beta_2 X_{2i} + \beta_3 X_{3i} + u_i \\
+       &= \beta_0 + \gamma_1 X_{1i} + \beta_2 (X_{1i} + X_{2i}) + \beta_3 X_{3i} + u_i
+   \end{aligned}
+   $$
+
+3. Define the new regressor $W_i = X_{1i} + X_{2i}$. Note that we replace $X_{2i}$ with $W_i$
+   $$
+   Y_i = \beta_0 + \gamma_1 X_{1i} + \beta_2 W_i + \beta_3 X_{3i} + u_i
+   $$ {#eq-reparameterized-model}
+
+Now:
+
+- The OLS coefficient on $X_{1i}$ is $\hat{\gamma}_1 = \hat{\beta}_1 - \hat{\beta}_2$.
+- The standard error reported by Stata for $X_{1i}$ is $\operatorname{SE}(\hat{\gamma}_1) = \operatorname{SE}(\hat{\beta}_1 - \hat{\beta}_2)$.
+- Testing $H_0: \beta_1 = \beta_2$ simplifies to testing $H_0: \gamma_1 = 0$ using the routine $t$-statistic on $X_{1i}$.
