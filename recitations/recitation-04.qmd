@@ -65,13 +65,14 @@ $$ {#eq-f-stat}
 
 where $R^2_{unres}$ and $R^2_{res}$ are the R-squared values from the unrestricted and restricted regressions, respectively, and $q=2$ is the number of restrictions, $n$ is the sample size, and $k=3$ is the number of regressors in the unrestricted regression (*excluding* the intercept).
 
-** INSERT STATA OUTPUT FROM CALIFORNIA CLASS SIZE DATA HERE **
-** STATA REPORTS HETEROSKEDASTICITY-ROBUST F-STAT **
-
 When both multiple coefficients are jointly significant, it motivates keeping both variables in the regression, despite potential concerns of
 multicollinearity inflating standard errors. 
 
+**Note:** Stata reports heteroskedasticity-robust F-statistics by default.
+
 # Testing Single Restrictions on Multiple Parameters
+
+## Testing $\beta_1 = \beta_2$
 
 Now consider from @eq-linear-model we want to test the following:
 
@@ -93,7 +94,7 @@ $$ {#eq-linear-model-rearranged}
 
 We can test this with a standard t-statistic:
 
-$$ t = \frac{\hat{\beta}_1 - \hat{\beta}_2}{se(\hat{\beta}_1 - \hat{\beta}_2)} 
+$$ t = \frac{\hat{\beta}_1 - \hat{\beta}_2}{\operatorname{SE}(\hat{\beta}_1 - \hat{\beta}_2)} 
 $$ {#eq-t-stat}
 
 Where $\operatorname{SE}(\hat{\beta}_1 - \hat{\beta}_2) = \sqrt{\operatorname{Var}(\hat{\beta}_1) + \operatorname{Var}(\hat{\beta}_2) - 2\operatorname{Cov}(\hat{\beta}_1, \hat{\beta}_2)}$. This requires the covariance term $\operatorname{Cov}(\hat{\beta}_1, \hat{\beta}_2)$, which is not typically reported in standard regression tables.
@@ -123,3 +124,52 @@ Now:
 - The OLS coefficient on $X_{1i}$ is $\hat{\gamma}_1 = \hat{\beta}_1 - \hat{\beta}_2$.
 - The standard error reported by Stata for $X_{1i}$ is $\operatorname{SE}(\hat{\gamma}_1) = \operatorname{SE}(\hat{\beta}_1 - \hat{\beta}_2)$.
 - Testing $H_0: \beta_1 = \beta_2$ simplifies to testing $H_0: \gamma_1 = 0$ using the routine $t$-statistic on $X_{1i}$.
+
+## Example: Constant returns to scale in the Cobb-Douglas production function
+
+A classic application of testing whether coefficients sum to one is testing for **Constant Returns to Scale (CRS)** in a Cobb-Douglas production function:
+
+$$
+Y_i = A K_i^{\beta_1} L_i^{\beta_2} e^{u_i}
+$$
+
+Taking natural logarithms of both sides yields the log-log empirical model:
+
+$$
+\log(Y_i) = \beta_0 + \beta_1 \log(K_i) + \beta_2 \log(L_i) + u_i
+$$ {#eq-cobb-douglas}
+
+where $\beta_0 = \log(A)$, $\beta_1$ is the elasticity of output with respect to capital, and $\beta_2$ is the elasticity of output with respect to labor.
+
+Constant returns to scale means that doubling both inputs doubles output, which implies the restriction:
+
+$$
+\begin{aligned}
+H_0&: \beta_1 + \beta_2 = 1 \quad \text{(Constant Returns to Scale)} \\
+H_1&: \beta_1 + \beta_2 \neq 1
+\end{aligned}
+$$ {#eq-sum-hypotheses}
+
+We can rewrite the regression so that software directly estimates $\gamma_1 = \beta_1 + \beta_2 - 1$ along with its standard error.
+
+1. Define the parameter of interest:
+   $$\gamma_1 = \beta_1 + \beta_2 - 1 \implies \beta_1 = 1 + \gamma_1 - \beta_2$$
+
+2. Substitute $\beta_1 = 1 + \gamma_1 - \beta_2$ into the Cobb-Douglas model (@eq-cobb-douglas):
+   $$
+   \begin{aligned}
+   \log(Y_i) &= \beta_0 + (1 + \gamma_1 - \beta_2) \log(K_i) + \beta_2 \log(L_i) + u_i \\
+             &= \beta_0 + \log(K_i) + \gamma_1 \log(K_i) + \beta_2 [\log(L_i) - \log(K_i)] + u_i
+   \end{aligned}
+   $$
+
+3. Subtract $\log(K_i)$ from both sides to express the dependent variable in per-capital terms, $\log(Y_i / K_i)$, and define the regressor $\log(L_i / K_i)$:
+   $$
+   \log(Y_i / K_i) = \beta_0 + \gamma_1 \log(K_i) + \beta_2 \log(L_i / K_i) + u_i
+   $$ {#eq-reparameterized-cobb-douglas}
+
+Now:
+
+- The OLS coefficient on $\log(K_i)$ is $\hat{\gamma}_1 = \hat{\beta}_1 + \hat{\beta}_2 - 1$.
+- The standard error reported by Stata for $\log(K_i)$ is $\operatorname{SE}(\hat{\gamma}_1) = \operatorname{SE}(\hat{\beta}_1 + \hat{\beta}_2)$.
+- Testing $H_0: \beta_1 + \beta_2 = 1$ simplifies to testing $H_0: \gamma_1 = 0$ using the routine $t$-statistic on $\log(K_i)$.

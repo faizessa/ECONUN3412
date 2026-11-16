@@ -1,0 +1,382 @@
+-----------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/faizessa/Library/CloudStorage/Dropbox/Mac/Documents/ta/ECONUN3412/output/recitati
+> on5.log
+  log type:  text
+ opened on:  19 Oct 2026, 15:08:25
+
+. 
+. /********************************************************************************
+> * PROBLEM 1: SW Empirical Exercise 5.2 (Growth.dta)
+> ********************************************************************************/
+. use "data/lead_mortality.dta", clear
+
+. 
+. /*
+> (a) Compute the average infant mortality rate (Inf) for cities with lead pipes
+> and for cities with nonlead pipes. Is there a statistically significant differ-
+> ence in the averages?
+> */
+. 
+. tab lead, sum(inf)
+
+            |         Summary of infrate
+       lead |        Mean   Std. Dev.       Freq.
+------------+------------------------------------
+          0 |   .38116785   .14775882          55
+          1 |   .40325758   .15308734         117
+------------+------------------------------------
+      Total |     .396194   .15132485         172
+
+. ttest inf, by(lead)
+
+Two-sample t test with equal variances
+------------------------------------------------------------------------------
+   Group |     Obs        Mean    Std. Err.   Std. Dev.   [95% Conf. Interval]
+---------+--------------------------------------------------------------------
+       0 |      55    .3811679    .0199238    .1477588     .341223    .4211127
+       1 |     117    .4032576    .0141529    .1530873    .3752259    .4312892
+---------+--------------------------------------------------------------------
+combined |     172     .396194    .0115384    .1513249    .3734179    .4189701
+---------+--------------------------------------------------------------------
+    diff |           -.0220897    .0247548               -.0709561    .0267766
+------------------------------------------------------------------------------
+    diff = mean(0) - mean(1)                                      t =  -0.8923
+Ho: diff = 0                                     degrees of freedom =      170
+
+    Ha: diff < 0                 Ha: diff != 0                 Ha: diff > 0
+ Pr(T < t) = 0.1867         Pr(|T| > |t|) = 0.3735          Pr(T > t) = 0.8133
+
+. /*
+> The amount of lead leached from lead pipes depends on the chemistry of
+> the water running through the pipes. The more acidic the water is (that
+> is, the lower its pH), the more lead is leached. Run a regression of Inf on
+> Lead, pH, and the interaction term Lead * pH.
+> */
+. 
+. reg inf i.lead##c.ph, robust
+
+Linear regression                               Number of obs     =        172
+                                                F(3, 168)         =      20.97
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.2719
+                                                Root MSE          =     .13027
+
+------------------------------------------------------------------------------
+             |               Robust
+     infrate |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      1.lead |   .4617985   .2076136     2.22   0.027     .0519309    .8716661
+          ph |  -.0751792   .0209532    -3.59   0.000    -.1165447   -.0338136
+             |
+   lead#c.ph |
+          1  |  -.0568622   .0280837    -2.02   0.044    -.1123047   -.0014197
+             |
+       _cons |   .9189038   .1504941     6.11   0.000     .6218005    1.216007
+------------------------------------------------------------------------------
+
+. 
+. /*
+> (i.) The regression includes four coefficients (the intercept and the three
+> coefficients multiplying the regressors). Explain what each coefficient
+> measures.
+> */
+. 
+. /*
+> (ii.) Plot the estimated regression function relating Inf to pH for Lead= 0
+> and for Lead= 1. Describe the differences in the regression functions,
+> and relate these differences to the coefficients you discussed in (i).
+> */
+. 
+. margins lead, at(ph=(5(0.5)9))
+
+Adjusted predictions                            Number of obs     =        172
+Model VCE    : Robust
+
+Expression   : Linear prediction, predict()
+
+1._at        : ph              =           5
+
+2._at        : ph              =         5.5
+
+3._at        : ph              =           6
+
+4._at        : ph              =         6.5
+
+5._at        : ph              =           7
+
+6._at        : ph              =         7.5
+
+7._at        : ph              =           8
+
+8._at        : ph              =         8.5
+
+9._at        : ph              =           9
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |     Margin   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+    _at#lead |
+        1 0  |   .5430081   .0482822    11.25   0.000     .4476901     .638326
+        1 1  |   .7204954   .0503103    14.32   0.000     .6211735    .8198174
+        2 0  |   .5054185   .0388174    13.02   0.000     .4287857    .5820512
+        2 1  |   .6544747   .0412349    15.87   0.000     .5730695      .73588
+        3 0  |   .4678289   .0300322    15.58   0.000     .4085398    .5271181
+        3 1  |   .5884541    .032316    18.21   0.000     .5246562    .6522519
+        4 0  |   .4302393   .0227288    18.93   0.000     .3853685    .4751101
+        4 1  |   .5224334   .0237312    22.01   0.000     .4755837    .5692831
+        5 0  |   .3926498   .0187291    20.96   0.000     .3556751    .4296244
+        5 1  |   .4564127   .0160262    28.48   0.000      .424774    .4880514
+        6 0  |   .3550602   .0201117    17.65   0.000      .315356    .3947644
+        6 1  |    .390392   .0111955    34.87   0.000     .3682899    .4124941
+        7 0  |   .3174706   .0260327    12.20   0.000     .2660773    .3688639
+        7 1  |   .3243713   .0129873    24.98   0.000      .298732    .3500107
+        8 0  |    .279881   .0342117     8.18   0.000     .2123408    .3474212
+        8 1  |   .2583506    .019668    13.14   0.000     .2195224    .2971788
+        9 0  |   .2422914   .0433901     5.58   0.000     .1566314    .3279515
+        9 1  |     .19233   .0279252     6.89   0.000     .1372004    .2474595
+------------------------------------------------------------------------------
+
+. 
+. marginsplot, ///
+>     title("Estimated Regression Function: Inf vs pH by Lead") ///
+>     ytitle("Inf (Estimated)") ///
+>     xtitle("pH") ///
+>     legend(order(1 "Lead = 0" 2 "Lead = 1")) ///
+>     recast(line) ///
+>     noci
+
+  Variables that uniquely identify margins: ph lead
+
+.         
+.  /*
+> (iii.) Does Lead have a statistically significant effect on infant mortality?
+> Explain.
+>  */
+. 
+. test 1.lead 1.lead#c.ph
+
+ ( 1)  1.lead = 0
+ ( 2)  1.lead#c.ph = 0
+
+       F(  2,   168) =    3.94
+            Prob > F =    0.0214
+
+. 
+. /* 
+> (v.) What is the average value of pH in the sample? At this pH level,
+> what is the estimated effect of Lead on infant mortality? What is
+> the standard deviation of pH? Suppose the pH level is one standard
+> deviation lower than the average level of pH in the sample: What is
+> the estimated effect of Lead on infant mortality? What if pH is one
+> standard deviation higher than the average value?
+> */
+. 
+. 
+. summarize ph
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+          ph |        172    7.322674    .6917288        5.7        8.9
+
+. local ph_mean = r(mean)
+
+. local ph_sd   = r(sd)
+
+. local ph_low  = `ph_mean' - `ph_sd'
+
+. local ph_high = `ph_mean' + `ph_sd'
+
+. 
+. * Display the calculated values for verification
+. display "Mean pH: " `ph_mean'
+Mean pH: 7.3226744
+
+. display "SD of pH: " `ph_sd'
+SD of pH: .69172875
+
+. display "Mean - 1 SD: " `ph_low'
+Mean - 1 SD: 6.6309457
+
+. display "Mean + 1 SD: " `ph_high'
+Mean + 1 SD: 8.0144032
+
+. 
+. * 3 & 4. Compute marginal effect of Lead at (Mean - 1 SD), Mean, and (Mean + 1 SD)
+. margins, dydx(lead) at(ph = (`ph_low' `ph_mean' `ph_high'))
+
+Conditional marginal effects                    Number of obs     =        172
+Model VCE    : Robust
+
+Expression   : Linear prediction, predict()
+dy/dx w.r.t. : 1.lead
+
+1._at        : ph              =    6.630946
+
+2._at        : ph              =    7.322674
+
+3._at        : ph              =    8.014403
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |      dy/dx   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+0.lead       |  (base outcome)
+-------------+----------------------------------------------------------------
+1.lead       |
+         _at |
+          1  |   .0847482   .0302985     2.80   0.006     .0249333     .144563
+          2  |    .045415   .0226337     2.01   0.046     .0007319     .090098
+          3  |   .0060817   .0293485     0.21   0.836    -.0518576     .064021
+------------------------------------------------------------------------------
+Note: dy/dx for factor levels is the discrete change from the base level.
+
+. 
+end of do-file
+
+. do "/var/folders/g7/q1_fmy2963l8zmmw0p8qf2gr0000gn/T//SD74849.000000"
+
+. margins, dydx(lead) at(ph = 6.5)
+
+Conditional marginal effects                    Number of obs     =        172
+Model VCE    : Robust
+
+Expression   : Linear prediction, predict()
+dy/dx w.r.t. : 1.lead
+at           : ph              =         6.5
+
+------------------------------------------------------------------------------
+             |            Delta-method
+             |      dy/dx   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      1.lead |    .092194   .0328598     2.81   0.006     .0273228    .1570653
+------------------------------------------------------------------------------
+Note: dy/dx for factor levels is the discrete change from the base level.
+
+. 
+end of do-file
+
+. do "/var/folders/g7/q1_fmy2963l8zmmw0p8qf2gr0000gn/T//SD74849.000000"
+
+. reg inf i.lead##c.ph precipitation, robust
+
+Linear regression                               Number of obs     =        172
+                                                F(4, 167)         =      21.91
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.3628
+                                                Root MSE          =     .12224
+
+-------------------------------------------------------------------------------
+              |               Robust
+      infrate |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+       1.lead |   .4303011   .2037226     2.11   0.036     .0280974    .8325048
+           ph |  -.0388957   .0199789    -1.95   0.053    -.0783394     .000548
+              |
+    lead#c.ph |
+           1  |  -.0522856     .02713    -1.93   0.056    -.1058475    .0012763
+              |
+precipitation |   .0917987   .0186202     4.93   0.000     .0550373      .12856
+        _cons |   .3460285   .1786733     1.94   0.054     -.006721    .6987779
+-------------------------------------------------------------------------------
+
+. 
+end of do-file
+
+. do "/var/folders/g7/q1_fmy2963l8zmmw0p8qf2gr0000gn/T//SD74849.000000"
+
+. reg inf i.lead##c.ph##c.precipitation, robust
+
+Linear regression                               Number of obs     =        172
+                                                F(7, 164)         =      20.55
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.3820
+                                                Root MSE          =     .12147
+
+-------------------------------------------------------------------------------------------
+                          |               Robust
+                  infrate |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+--------------------------+----------------------------------------------------------------
+                   1.lead |    1.48233   1.803312     0.82   0.412    -2.078371    5.043031
+                       ph |   .1215621     .16243     0.75   0.455    -.1991615    .4422857
+                          |
+                lead#c.ph |
+                       1  |  -.1485968   .2216899    -0.67   0.504    -.5863312    .2891376
+                          |
+            precipitation |   .4615622   .3788599     1.22   0.225    -.2865098    1.209634
+                          |
+     lead#c.precipitation |
+                       1  |  -.2268512   .5146562    -0.44   0.660    -1.243058    .7893552
+                          |
+     c.ph#c.precipitation |  -.0384011   .0463534    -0.83   0.409    -.1299275    .0531252
+                          |
+lead#c.ph#c.precipitation |
+                       1  |   .0170107   .0637113     0.27   0.790    -.1087894    .1428108
+                          |
+                    _cons |  -1.134222   1.337156    -0.85   0.398    -3.774483    1.506039
+-------------------------------------------------------------------------------------------
+
+. 
+end of do-file
+
+. do "/var/folders/g7/q1_fmy2963l8zmmw0p8qf2gr0000gn/T//SD74849.000000"
+
+. reg inf i.lead##c.ph precipitation, robust
+
+Linear regression                               Number of obs     =        172
+                                                F(4, 167)         =      21.91
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.3628
+                                                Root MSE          =     .12224
+
+-------------------------------------------------------------------------------
+              |               Robust
+      infrate |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+       1.lead |   .4303011   .2037226     2.11   0.036     .0280974    .8325048
+           ph |  -.0388957   .0199789    -1.95   0.053    -.0783394     .000548
+              |
+    lead#c.ph |
+           1  |  -.0522856     .02713    -1.93   0.056    -.1058475    .0012763
+              |
+precipitation |   .0917987   .0186202     4.93   0.000     .0550373      .12856
+        _cons |   .3460285   .1786733     1.94   0.054     -.006721    .6987779
+-------------------------------------------------------------------------------
+
+. 
+end of do-file
+
+. use "/Users/faizessa/Library/CloudStorage/Dropbox/share_Faiz_IBS/IBS_ADB/IBS_ADB_2000_2015_original
+> .dta"
+
+. use "/Users/faizessa/Library/CloudStorage/Dropbox/share_Faiz_IBS/IBS_ADB/IBS_ADB_2000_2015_original
+> .dta"
+
+. use "/Users/faizessa/Library/CloudStorage/Dropbox/share_Faiz_IBS/IBS_ADB/IBS_ADB_2000_2015_original
+> .dta"
+
+. use "/Users/faizessa/Library/CloudStorage/Dropbox/share_Faiz_IBS/IBS_ADB/IBS_ADB_2000_2015_original
+> .dta"
+
+. use "/Users/faizessa/Library/CloudStorage/Dropbox/share_Faiz_IBS/IBS_ADB/IBS_ADB_2000_2015_original
+> .dta"
+
+. use "/Users/faizessa/Library/CloudStorage/Dropbox/Mac/Documents/projects/indo_manufacturing/IBS_ADB
+> _2000_2015_original.dta"
+
+. use "/Users/faizessa/Library/CloudStorage/Dropbox/Mac/Documents/projects/indo_manufacturing/IBS_ADB
+> _2000_2015_original.dta"
+
+. use "/Users/faizessa/Library/CloudStorage/Dropbox/IndonesiaData/data to be allocated to folders - f
+> rom sam/dpd_2014_da1_all.dta"
+
+. use "/Users/faizessa/Library/CloudStorage/Dropbox/Mac/Documents/projects/indo_manufacturing/IBS_ADB
+> _2000_2015_original.dta"
+
+. use "/Users/faizessa/Library/CloudStorage/Dropbox/SI/si_panel.dta"
+
+. use "/Users/faizessa/Library/CloudStorage/Dropbox/SI/si_panel.dta"
+
+. use "/Users/faizessa/Library/CloudStorage/Dropbox/SI/si2012.dta"
+
