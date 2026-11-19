@@ -1,0 +1,824 @@
+-------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/faizessa/Library/CloudStorage/Dropbox/Mac/Documents/ta/ECON
+> UN3412/output/recitation7.log
+  log type:  text
+ opened on:  16 Nov 2026, 13:09:58
+
+. 
+. /****************************************************************************
+> ****
+> * PROBLEM 1: SW Empirical Exercise 10.1 (Guns.dta)
+> *****************************************************************************
+> ***/
+. use "data/Guns.dta", clear
+
+. 
+. * Inspect dataset and declare panel structure (stateid = entity, year = time)
+. describe
+
+Contains data from data/Guns.dta
+  obs:         1,173                          
+ vars:            13                          21 Nov 2005 17:56
+ size:        48,093                          
+-------------------------------------------------------------------------------
+              storage   display    value
+variable name   type    format     label      variable label
+-------------------------------------------------------------------------------
+year            byte    %9.0g                 
+vio             float   %9.0g                 Violent Crime Rate per 100,000
+                                                population (BJS)
+mur             float   %9.0g                 Murder Crime Rate per 100,000
+                                                population (BJS)
+rob             float   %9.0g                 Robbery Crime Rate per 100,000
+                                                population (BJS)
+incarc_rate     int     %8.0g                 72-99 ONLY - Lagged Rate per
+                                                100,000 resident pop of
+                                                sentenced prisoners in Stat
+pb1064          float   %9.0g                 
+pw1064          float   %9.0g                 
+pm1029          float   %9.0g                 
+pop             float   %9.0g                 
+avginc          float   %9.0g                 
+density         float   %9.0g                 
+stateid         byte    %9.0g                 
+shall           byte    %9.0g                 
+-------------------------------------------------------------------------------
+Sorted by: 
+
+. summarize
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+        year |      1,173          88    6.636079         77         99
+         vio |      1,173    503.0747    334.2772         47     2921.8
+         mur |      1,173    7.665132     7.52271         .2       80.6
+         rob |      1,173    161.8202      170.51        6.4     1635.1
+ incarc_rate |      1,173    226.5797    178.8881         19       1913
+-------------+---------------------------------------------------------
+      pb1064 |      1,173    5.336217    4.885688   .2482066   26.97957
+      pw1064 |      1,173    62.94543    9.761527   21.78043   76.52575
+      pm1029 |      1,173    16.08113    1.732143   12.21368   22.35269
+         pop |      1,173    4.816341    5.252115    .402753   33.14512
+      avginc |      1,173     13.7248    2.554543   8.554884   23.64671
+-------------+---------------------------------------------------------
+     density |      1,173    .3520382    1.355472   .0007071   11.10212
+     stateid |      1,173    28.96078    15.68352          1         56
+       shall |      1,173    .2429668    .4290581          0          1
+
+. xtset stateid year
+       panel variable:  stateid (strongly balanced)
+        time variable:  year, 77 to 99
+                delta:  1 unit
+
+. 
+. * Generate natural logarithms of the three crime rates
+. generate lnvio = ln(vio)
+
+. label variable lnvio "Log of Violent Crime Rate (per 100,000)"
+
+. 
+. generate lnrob = ln(rob)
+
+. label variable lnrob "Log of Robbery Rate (per 100,000)"
+
+. 
+. generate lnmur = ln(mur)
+
+. label variable lnmur "Log of Murder Rate (per 100,000)"
+
+. 
+. * Define local macro for the control variables in regression (2)
+. local controls incarc_rate density avginc pop pb1064 pw1064 pm1029
+
+. 
+. /*===========================================================================
+> ==
+> (a) Estimate:
+>     (1) a regression of ln(vio) against shall, and
+>     (2) a regression of ln(vio) against shall, incarc_rate, density, avginc,
+>         pop, pb1064, pw1064, and pm1029.
+> =============================================================================
+> */
+. 
+. * Regression (1): Pooled OLS without controls
+. display _newline "=== (a)(1) Pooled OLS: ln(vio) on shall ==="
+
+=== (a)(1) Pooled OLS: ln(vio) on shall ===
+
+. regress lnvio shall, robust
+
+Linear regression                               Number of obs     =      1,173
+                                                F(1, 1171)        =      86.86
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.0866
+                                                Root MSE          =     .61735
+
+------------------------------------------------------------------------------
+             |               Robust
+       lnvio |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       shall |  -.4429646   .0475283    -9.32   0.000    -.5362148   -.3497144
+       _cons |   6.134919   .0193039   317.81   0.000     6.097045    6.172793
+------------------------------------------------------------------------------
+
+. 
+. * Regression (2): Pooled OLS with demographic and economic controls
+. display _newline "=== (a)(2) Pooled OLS: ln(vio) on shall + controls ==="
+
+=== (a)(2) Pooled OLS: ln(vio) on shall + controls ===
+
+. regress lnvio shall `controls', robust
+
+Linear regression                               Number of obs     =      1,173
+                                                F(8, 1164)        =      95.67
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.5643
+                                                Root MSE          =     .42769
+
+------------------------------------------------------------------------------
+             |               Robust
+       lnvio |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       shall |  -.3683869   .0347879   -10.59   0.000     -.436641   -.3001329
+ incarc_rate |   .0016126   .0001807     8.92   0.000     .0012581    .0019672
+     density |   .0266885   .0143494     1.86   0.063    -.0014651     .054842
+      avginc |   .0012051   .0072778     0.17   0.869     -.013074    .0154842
+         pop |   .0427098   .0031466    13.57   0.000     .0365361    .0488836
+      pb1064 |   .0808526   .0199924     4.04   0.000     .0416274    .1200778
+      pw1064 |   .0312005   .0097271     3.21   0.001      .012116    .0502851
+      pm1029 |   .0088709   .0120604     0.74   0.462    -.0147917    .0325334
+       _cons |   2.981738   .6090198     4.90   0.000     1.786839    4.176638
+------------------------------------------------------------------------------
+
+. 
+. /*
+> (i.) Interpret the coefficient on shall in regression (2). Is this estimate
+> large or small in a real-world sense?
+> 
+> Answer:
+> - The coefficient on `shall` in regression (2) is approximately -0.368.
+> - Interpretation: Holding incarceration rate, density, average income, total
+>   population, and demographic shares constant, states with a shall-issue
+>   concealed weapons law have a violent crime rate that is approximately 36.8%
+>   lower (or more precisely, 100 * (exp(-0.3684) - 1) = -30.8% lower) than sta
+> tes
+>   without such a law.
+> - Real-world magnitude: A ~31-37% reduction in violent crime is a very large
+>   effect in a real-world sense.
+> 
+> (ii.) Does adding the control variables in regression (2) change the estimate
+> d
+> effect of a shall-issue law in regression (1) as measured by statistical
+> significance? As measured by the real-world significance of the estimated
+> coefficient?
+> 
+> Answer:
+> - Statistical significance: In both regression (1) (coef = -0.443, SE = 0.048
+> ,
+>   t = -9.15) and regression (2) (coef = -0.368, SE = 0.035, t = -10.59), the
+>   coefficient on `shall` is highly statistically significant at the 1% level.
+> - Real-world significance: Adding controls attenuates the point estimate slig
+> htly
+>   from -0.443 (-44.3%) to -0.368 (-36.8%), but both estimates remain very lar
+> ge
+>   in magnitude and economically meaningful.
+> 
+> (iii.) Suggest a variable that varies across states but plausibly varies
+> little—or not at all—over time and that could cause omitted variable bias in
+> regression (2).
+> 
+> Answer:
+> - Examples include underlying cultural attitudes toward guns and violence,
+>   long-standing quality/organization of state police and judicial institution
+> s,
+>   geography/urban structure (e.g., rural vs. metropolitan concentration not
+>   captured by state-wide density), or historical gang presence. These factors
+>   differ across states, are largely time-invariant, affect violent crime rate
+> s,
+>   and are correlated with whether a state enacts a shall-issue law.
+> */
+. 
+. /*===========================================================================
+> ==
+> (b) Do the results change when you add fixed state effects? If so, which set 
+> of
+> regression results is more credible, and why?
+> =============================================================================
+> */
+. 
+. * Regression (3): State Fixed Effects (clustered SEs at the state level)
+. display _newline "=== (b) State Fixed Effects: ln(vio) on shall + controls + 
+> State FE ==="
+
+=== (b) State Fixed Effects: ln(vio) on shall + controls + State FE ===
+
+. xtreg lnvio shall `controls', fe vce(cluster stateid)
+
+Fixed-effects (within) regression               Number of obs     =      1,173
+Group variable: stateid                         Number of groups  =         51
+
+R-sq:                                           Obs per group:
+     within  = 0.2178                                         min =         23
+     between = 0.0033                                         avg =       23.0
+     overall = 0.0001                                         max =         23
+
+                                                F(8,50)           =      34.10
+corr(u_i, Xb)  = -0.3687                        Prob > F          =     0.0000
+
+                               (Std. Err. adjusted for 51 clusters in stateid)
+------------------------------------------------------------------------------
+             |               Robust
+       lnvio |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       shall |  -.0461415   .0417616    -1.10   0.275    -.1300223    .0377392
+ incarc_rate |   -.000071   .0002504    -0.28   0.778    -.0005739    .0004318
+     density |  -.1722901   .1376129    -1.25   0.216    -.4486936    .1041135
+      avginc |  -.0092037   .0129649    -0.71   0.481    -.0352445     .016837
+         pop |   .0115247    .014224     0.81   0.422    -.0170452    .0400945
+      pb1064 |   .1042804   .0326849     3.19   0.002     .0386308    .1699301
+      pw1064 |   .0408611   .0134585     3.04   0.004     .0138289    .0678932
+      pm1029 |  -.0502725   .0206949    -2.43   0.019    -.0918394   -.0087057
+       _cons |   3.866017   .7701057     5.02   0.000     2.319214    5.412819
+-------------+----------------------------------------------------------------
+     sigma_u |  .68024951
+     sigma_e |  .16072287
+         rho |  .94712779   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+
+. 
+. * Alternative syntax with explicit state dummies and clustered SEs:
+. * regress lnvio shall `controls' i.stateid, vce(cluster stateid)
+. 
+. /*
+> Answer:
+> - Yes, the results change dramatically. The coefficient on `shall` drops from
+>   -0.368 (t = -10.59) to -0.046 (clustered SE = 0.042, t = -1.10, p = 0.276).
+> - The estimated effect is now much smaller (-4.6%) and statistically
+>   indistinguishable from zero at conventional significance levels.
+> - The state fixed effects regression is far more credible because it controls
+>   for all time-invariant unobserved state characteristics (cultural attitudes
+>   toward firearms, historical crime levels, baseline institutional quality) t
+> hat
+>   are correlated with both violent crime and the passage of shall-issue laws.
+> */
+. 
+. /*===========================================================================
+> ==
+> (c) Do the results change when you add fixed time effects? If so, which set o
+> f
+> regression results is more credible, and why?
+> =============================================================================
+> */
+. 
+. * Regression (4): Two-Way Fixed Effects (State FE + Year FE, clustered SEs)
+. display _newline "=== (c) State & Time Fixed Effects: ln(vio) on shall + cont
+> rols + State FE + Year FE ==="
+
+=== (c) State & Time Fixed Effects: ln(vio) on shall + controls + State FE + Ye
+> ar FE ===
+
+. xtreg lnvio shall `controls' i.year, fe vce(cluster stateid)
+
+Fixed-effects (within) regression               Number of obs     =      1,173
+Group variable: stateid                         Number of groups  =         51
+
+R-sq:                                           Obs per group:
+     within  = 0.4180                                         min =         23
+     between = 0.0419                                         avg =       23.0
+     overall = 0.0009                                         max =         23
+
+                                                F(30,50)          =      56.86
+corr(u_i, Xb)  = -0.2929                        Prob > F          =     0.0000
+
+                               (Std. Err. adjusted for 51 clusters in stateid)
+------------------------------------------------------------------------------
+             |               Robust
+       lnvio |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       shall |  -.0279935   .0407168    -0.69   0.495    -.1097757    .0537886
+ incarc_rate |    .000076   .0002079     0.37   0.716    -.0003416    .0004935
+     density |   -.091555   .1238622    -0.74   0.463    -.3403396    .1572296
+      avginc |   .0009587   .0164931     0.06   0.954    -.0321688    .0340861
+         pop |  -.0047544   .0152294    -0.31   0.756    -.0353436    .0258347
+      pb1064 |   .0291862   .0495407     0.59   0.558    -.0703192    .1286916
+      pw1064 |   .0092501   .0237564     0.39   0.699    -.0384659    .0569662
+      pm1029 |   .0733254   .0524733     1.40   0.168    -.0320704    .1787211
+             |
+        year |
+         78  |   .0585261   .0161556     3.62   0.001     .0260767    .0909755
+         79  |   .1639486   .0244579     6.70   0.000     .1148233    .2130738
+         80  |   .2170759   .0334184     6.50   0.000     .1499531    .2841987
+         81  |   .2172551   .0391956     5.54   0.000     .1385284    .2959819
+         82  |   .1946328   .0465743     4.18   0.000     .1010856      .28818
+         83  |    .158645   .0593845     2.67   0.010     .0393676    .2779223
+         84  |   .1929883   .0770021     2.51   0.015     .0383251    .3476515
+         85  |   .2444764   .0922217     2.65   0.011     .0592438    .4297091
+         86  |   .3240904   .1089181     2.98   0.004     .1053219    .5428589
+         87  |    .324365   .1249881     2.60   0.012      .073319    .5754111
+         88  |   .3867412   .1397074     2.77   0.008     .1061305    .6673518
+         89  |   .4422143   .1535358     2.88   0.006     .1338286    .7505999
+         90  |   .5430478   .1960859     2.77   0.008     .1491976     .936898
+         91  |   .5959456   .2040685     2.92   0.005     .1860618    1.005829
+         92  |   .6275171   .2170306     2.89   0.006     .1915982    1.063436
+         93  |   .6497414   .2246177     2.89   0.006     .1985834    1.100899
+         94  |   .6354187   .2332437     2.72   0.009     .1669349    1.103903
+         95  |   .6276831   .2423607     2.59   0.013     .1408874    1.114479
+         96  |   .5713423   .2534067     2.25   0.029       .06236    1.080325
+         97  |   .5501153   .2613516     2.10   0.040     .0251751    1.075055
+         98  |   .4932904   .2746546     1.80   0.079    -.0583697     1.04495
+         99  |   .4328776   .2862197     1.51   0.137    -.1420117    1.007767
+             |
+       _cons |   3.765525   1.152108     3.27   0.002     1.451448    6.079603
+-------------+----------------------------------------------------------------
+     sigma_u |   .6663043
+     sigma_e |   .1400264
+         rho |  .95770338   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+
+. 
+. * Test joint significance of the time fixed effects
+. testparm i.year
+
+ ( 1)  78.year = 0
+ ( 2)  79.year = 0
+ ( 3)  80.year = 0
+ ( 4)  81.year = 0
+ ( 5)  82.year = 0
+ ( 6)  83.year = 0
+ ( 7)  84.year = 0
+ ( 8)  85.year = 0
+ ( 9)  86.year = 0
+ (10)  87.year = 0
+ (11)  88.year = 0
+ (12)  89.year = 0
+ (13)  90.year = 0
+ (14)  91.year = 0
+ (15)  92.year = 0
+ (16)  93.year = 0
+ (17)  94.year = 0
+ (18)  95.year = 0
+ (19)  96.year = 0
+ (20)  97.year = 0
+ (21)  98.year = 0
+ (22)  99.year = 0
+
+       F( 22,    50) =   21.62
+            Prob > F =    0.0000
+
+. 
+. /*
+> Answer:
+> - Adding time fixed effects reduces the magnitude of the `shall` coefficient
+>   even further, from -0.046 to -0.028 (clustered SE = 0.041, t = -0.69,
+>   p = 0.496), which remains statistically insignificant.
+> - The time fixed effects are jointly highly significant (F-test p-value < 0.0
+> 01).
+> - The regression with both state and time fixed effects is more credible beca
+> use
+>   national crime rates fluctuated substantially between 1977 and 1999 (e.g., 
+> the
+>   national crime decline in the 1990s due to macroeconomic trends, crack-coca
+> ine
+>   epidemic dynamics, federal policies, and national policing changes) at the
+>   same time that more states were adopting shall-issue laws.
+> */
+. 
+. /*===========================================================================
+> ==
+> (d) Repeat the analysis using ln(rob) and ln(mur) in place of ln(vio).
+> =============================================================================
+> */
+. 
+. *----------------------------------------------------------------------------
+> -*
+. * Dependent Variable: ln(rob) (Log Robbery Rate)
+. *----------------------------------------------------------------------------
+> -*
+. display _newline "=== (d) Robbery Rate: Model (1) Pooled OLS (no controls) ==
+> ="
+
+=== (d) Robbery Rate: Model (1) Pooled OLS (no controls) ===
+
+. regress lnrob shall, robust
+
+Linear regression                               Number of obs     =      1,173
+                                                F(1, 1171)        =     124.66
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.1208
+                                                Root MSE          =     .89548
+
+------------------------------------------------------------------------------
+             |               Robust
+       lnrob |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       shall |  -.7733207   .0692623   -11.17   0.000    -.9092128   -.6374286
+       _cons |   4.873051   .0279093   174.60   0.000     4.818293    4.927809
+------------------------------------------------------------------------------
+
+. 
+. display _newline "=== (d) Robbery Rate: Model (2) Pooled OLS (with controls) 
+> ==="
+
+=== (d) Robbery Rate: Model (2) Pooled OLS (with controls) ===
+
+. regress lnrob shall `controls', robust
+
+Linear regression                               Number of obs     =      1,173
+                                                F(8, 1164)        =     144.90
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.5962
+                                                Root MSE          =     .60869
+
+------------------------------------------------------------------------------
+             |               Robust
+       lnrob |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       shall |  -.5288202   .0510021   -10.37   0.000    -.6288865   -.4287539
+ incarc_rate |   .0010057   .0001869     5.38   0.000     .0006391    .0013724
+     density |   .0905048   .0153545     5.89   0.000     .0603792    .1206303
+      avginc |   .0407325   .0092722     4.39   0.000     .0225404    .0589246
+         pop |   .0778176   .0054853    14.19   0.000     .0670554    .0885799
+      pb1064 |   .1021881   .0265948     3.84   0.000     .0500091    .1543672
+      pw1064 |   .0275209   .0135419     2.03   0.042     .0009515    .0540902
+      pm1029 |   .0272565   .0149995     1.82   0.069    -.0021726    .0566856
+       _cons |   .9041383   .8893029     1.02   0.310    -.8406777    2.648954
+------------------------------------------------------------------------------
+
+. 
+. display _newline "=== (d) Robbery Rate: Model (3) State Fixed Effects ==="
+
+=== (d) Robbery Rate: Model (3) State Fixed Effects ===
+
+. xtreg lnrob shall `controls', fe vce(cluster stateid)
+
+Fixed-effects (within) regression               Number of obs     =      1,173
+Group variable: stateid                         Number of groups  =         51
+
+R-sq:                                           Obs per group:
+     within  = 0.0366                                         min =         23
+     between = 0.0531                                         avg =       23.0
+     overall = 0.0521                                         max =         23
+
+                                                F(8,50)           =       2.86
+corr(u_i, Xb)  = -0.0859                        Prob > F          =     0.0108
+
+                               (Std. Err. adjusted for 51 clusters in stateid)
+------------------------------------------------------------------------------
+             |               Robust
+       lnrob |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       shall |  -.0078189   .0551653    -0.14   0.888    -.1186217    .1029838
+ incarc_rate |  -.0000763    .000321    -0.24   0.813    -.0007211    .0005685
+     density |  -.1860917   .1663413    -1.12   0.269     -.520198    .1480147
+      avginc |  -.0175195   .0220352    -0.80   0.430    -.0617784    .0267395
+         pop |   .0163332   .0275874     0.59   0.556    -.0390778    .0717441
+      pb1064 |   .1115421   .0511546     2.18   0.034      .008795    .2142891
+      pw1064 |   .0271807   .0164344     1.65   0.104    -.0058286    .0601901
+      pm1029 |   .0111817   .0290976     0.38   0.702    -.0472626     .069626
+       _cons |   2.445723   1.012584     2.42   0.019     .4118887    4.479557
+-------------+----------------------------------------------------------------
+     sigma_u |   .9174441
+     sigma_e |  .21514885
+         rho |  .94787229   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+
+. 
+. display _newline "=== (d) Robbery Rate: Model (4) State + Year Fixed Effects 
+> ==="
+
+=== (d) Robbery Rate: Model (4) State + Year Fixed Effects ===
+
+. xtreg lnrob shall `controls' i.year, fe vce(cluster stateid)
+
+Fixed-effects (within) regression               Number of obs     =      1,173
+Group variable: stateid                         Number of groups  =         51
+
+R-sq:                                           Obs per group:
+     within  = 0.2359                                         min =         23
+     between = 0.1358                                         avg =       23.0
+     overall = 0.1362                                         max =         23
+
+                                                F(30,50)          =      40.77
+corr(u_i, Xb)  = 0.1441                         Prob > F          =     0.0000
+
+                               (Std. Err. adjusted for 51 clusters in stateid)
+------------------------------------------------------------------------------
+             |               Robust
+       lnrob |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       shall |   .0268298   .0521753     0.51   0.609    -.0779673    .1316269
+ incarc_rate |   .0000314   .0003477     0.09   0.928     -.000667    .0007297
+     density |  -.0447449   .1982135    -0.23   0.822    -.4428684    .3533786
+      avginc |   .0143569   .0247676     0.58   0.565    -.0353903     .064104
+         pop |   .0000164   .0259374     0.00   0.999    -.0520805    .0521133
+      pb1064 |   .0141078   .0840609     0.17   0.867    -.1547335    .1829491
+      pw1064 |  -.0128322   .0327626    -0.39   0.697    -.0786379    .0529734
+      pm1029 |   .1046049    .072997     1.43   0.158    -.0420138    .2512236
+             |
+        year |
+         78  |   .0328497   .0216897     1.51   0.136    -.0107154    .0764148
+         79  |   .1375917    .032117     4.28   0.000     .0730828    .2021006
+         80  |    .243408    .045464     5.35   0.000     .1520908    .3347251
+         81  |   .2737088   .0508793     5.38   0.000     .1715147     .375903
+         82  |     .21599   .0644109     3.35   0.002     .0866168    .3453632
+         83  |   .1208158   .0867066     1.39   0.170    -.0533395    .2949711
+         84  |    .078831   .1064308     0.74   0.462    -.1349416    .2926036
+         85  |   .1131495   .1272629     0.89   0.378    -.1424655    .3687645
+         86  |   .1895678   .1521449     1.25   0.219    -.1160242    .4951598
+         87  |   .1572151   .1688872     0.93   0.356    -.1820049     .496435
+         88  |   .1927596   .1878849     1.03   0.310    -.1846184    .5701376
+         89  |   .2487313   .2140573     1.16   0.251    -.1812154    .6786781
+         90  |   .3509806   .2668617     1.32   0.194     -.185027    .8869881
+         91  |   .4668537   .2791767     1.67   0.101    -.0938891    1.027596
+         92  |   .4633221   .2951262     1.57   0.123    -.1294562      1.0561
+         93  |   .4796983   .3082342     1.56   0.126    -.1394084    1.098805
+         94  |   .4943754   .3234124     1.53   0.133    -.1552175    1.143968
+         95  |   .4940171   .3338462     1.48   0.145    -.1765328    1.164567
+         96  |   .4341625   .3504351     1.24   0.221    -.2697072    1.138032
+         97  |   .3652393   .3581743     1.02   0.313     -.354175    1.084654
+         98  |   .2677144   .3690383     0.73   0.472    -.4735208     1.00895
+         99  |   .1894683   .3845414     0.49   0.624    -.5829059    .9618425
+             |
+       _cons |    3.27912   1.676644     1.96   0.056     -.088518    6.646759
+-------------+----------------------------------------------------------------
+     sigma_u |  .88484023
+     sigma_e |  .19352746
+         rho |  .95434775   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+
+. testparm i.year
+
+ ( 1)  78.year = 0
+ ( 2)  79.year = 0
+ ( 3)  80.year = 0
+ ( 4)  81.year = 0
+ ( 5)  82.year = 0
+ ( 6)  83.year = 0
+ ( 7)  84.year = 0
+ ( 8)  85.year = 0
+ ( 9)  86.year = 0
+ (10)  87.year = 0
+ (11)  88.year = 0
+ (12)  89.year = 0
+ (13)  90.year = 0
+ (14)  91.year = 0
+ (15)  92.year = 0
+ (16)  93.year = 0
+ (17)  94.year = 0
+ (18)  95.year = 0
+ (19)  96.year = 0
+ (20)  97.year = 0
+ (21)  98.year = 0
+ (22)  99.year = 0
+
+       F( 22,    50) =   25.86
+            Prob > F =    0.0000
+
+. 
+. *----------------------------------------------------------------------------
+> -*
+. * Dependent Variable: ln(mur) (Log Murder Rate)
+. *----------------------------------------------------------------------------
+> -*
+. display _newline "=== (d) Murder Rate: Model (1) Pooled OLS (no controls) ===
+> "
+
+=== (d) Murder Rate: Model (1) Pooled OLS (no controls) ===
+
+. regress lnmur shall, robust
+
+Linear regression                               Number of obs     =      1,173
+                                                F(1, 1171)        =      95.12
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.0834
+                                                Root MSE          =     .67375
+
+------------------------------------------------------------------------------
+             |               Robust
+       lnmur |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       shall |  -.4733725    .048536    -9.75   0.000    -.5685997   -.3781452
+       _cons |   1.897556   .0219606    86.41   0.000     1.854469    1.940642
+------------------------------------------------------------------------------
+
+. 
+. display _newline "=== (d) Murder Rate: Model (2) Pooled OLS (with controls) =
+> =="
+
+=== (d) Murder Rate: Model (2) Pooled OLS (with controls) ===
+
+. regress lnmur shall `controls', robust
+
+Linear regression                               Number of obs     =      1,173
+                                                F(8, 1164)        =     176.49
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.6059
+                                                Root MSE          =     .44312
+
+------------------------------------------------------------------------------
+             |               Robust
+       lnmur |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       shall |  -.3131735   .0357019    -8.77   0.000    -.3832208   -.2431262
+ incarc_rate |    .002097   .0001544    13.58   0.000     .0017941    .0023999
+     density |   .0396669   .0117541     3.37   0.001     .0166054    .0627284
+      avginc |  -.0772578   .0087513    -8.83   0.000    -.0944278   -.0600878
+         pop |   .0416175   .0035077    11.86   0.000     .0347355    .0484995
+      pb1064 |   .1307641    .018782     6.96   0.000     .0939137    .1676145
+      pw1064 |   .0470796   .0090873     5.18   0.000     .0292502    .0649089
+      pm1029 |   .0655308   .0136782     4.79   0.000     .0386941    .0923674
+       _cons |  -2.485593   .6149912    -4.04   0.000    -3.692209   -1.278978
+------------------------------------------------------------------------------
+
+. 
+. display _newline "=== (d) Murder Rate: Model (3) State Fixed Effects ==="
+
+=== (d) Murder Rate: Model (3) State Fixed Effects ===
+
+. xtreg lnmur shall `controls', fe vce(cluster stateid)
+
+Fixed-effects (within) regression               Number of obs     =      1,173
+Group variable: stateid                         Number of groups  =         51
+
+R-sq:                                           Obs per group:
+     within  = 0.1528                                         min =         23
+     between = 0.2221                                         avg =       23.0
+     overall = 0.1846                                         max =         23
+
+                                                F(8,50)           =     156.39
+corr(u_i, Xb)  = -0.8961                        Prob > F          =     0.0000
+
+                               (Std. Err. adjusted for 51 clusters in stateid)
+------------------------------------------------------------------------------
+             |               Robust
+       lnmur |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       shall |    -.06081   .0369632    -1.65   0.106    -.1350527    .0134327
+ incarc_rate |    -.00036   .0004231    -0.85   0.399    -.0012099    .0004899
+     density |  -.6707132   .3957745    -1.69   0.096     -1.46565    .1242232
+      avginc |   .0243114   .0156779     1.55   0.127    -.0071786    .0558013
+         pop |  -.0257054   .0203457    -1.26   0.212    -.0665709    .0151602
+      pb1064 |   .0307009   .0781245     0.39   0.696    -.1262169    .1876186
+      pw1064 |   .0103313   .0128776     0.80   0.426    -.0155341    .0361967
+      pm1029 |   .0392384   .0215964     1.82   0.075    -.0041394    .0826161
+       _cons |   .4600088   .8425884     0.55   0.588     -1.23238    2.152397
+-------------+----------------------------------------------------------------
+     sigma_u |    1.36035
+     sigma_e |  .21942693
+         rho |  .97464151   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+
+. 
+. display _newline "=== (d) Murder Rate: Model (4) State + Year Fixed Effects =
+> =="
+
+=== (d) Murder Rate: Model (4) State + Year Fixed Effects ===
+
+. xtreg lnmur shall `controls' i.year, fe vce(cluster stateid)
+
+Fixed-effects (within) regression               Number of obs     =      1,173
+Group variable: stateid                         Number of groups  =         51
+
+R-sq:                                           Obs per group:
+     within  = 0.2905                                         min =         23
+     between = 0.1945                                         avg =       23.0
+     overall = 0.1413                                         max =         23
+
+                                                F(30,50)          =      81.49
+corr(u_i, Xb)  = -0.8336                        Prob > F          =     0.0000
+
+                               (Std. Err. adjusted for 51 clusters in stateid)
+------------------------------------------------------------------------------
+             |               Robust
+       lnmur |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+       shall |  -.0149524   .0382403    -0.39   0.697    -.0917603    .0618556
+ incarc_rate |  -.0001164   .0003631    -0.32   0.750    -.0008457    .0006129
+     density |  -.5442635   .3192203    -1.70   0.094    -1.185436    .0969093
+      avginc |   .0566492   .0165554     3.42   0.001     .0233967    .0899017
+         pop |  -.0320769   .0209819    -1.53   0.133    -.0742202    .0100664
+      pb1064 |   .0219833   .0758151     0.29   0.773    -.1302958    .1742624
+      pw1064 |  -.0004893   .0201044    -0.02   0.981    -.0408701    .0398915
+      pm1029 |   .0691941   .0417945     1.66   0.104    -.0147526    .1531408
+             |
+        year |
+         78  |  -.0007195   .0322722    -0.02   0.982    -.0655401    .0641011
+         79  |   .0592481   .0311141     1.90   0.063    -.0032465    .1217427
+         80  |   .0901814    .041058     2.20   0.033     .0077139    .1726489
+         81  |   .1021543   .0510636     2.00   0.051      -.00041    .2047186
+         82  |   .0224098   .0581861     0.39   0.702    -.0944604    .1392799
+         83  |  -.0314385   .0640621    -0.49   0.626    -.1601111    .0972341
+         84  |  -.1359192    .071662    -1.90   0.064    -.2798565    .0080181
+         85  |  -.0866144   .0856965    -1.01   0.317    -.2587409    .0855122
+         86  |  -.0122752   .0927286    -0.13   0.895    -.1985262    .1739758
+         87  |  -.0290338   .0999408    -0.29   0.773    -.2297707    .1717032
+         88  |  -.0174594   .1196893    -0.15   0.885    -.2578626    .2229437
+         89  |  -.0145617   .1321034    -0.11   0.913    -.2798993    .2507759
+         90  |    .059998   .1649718     0.36   0.718    -.2713577    .3913537
+         91  |   .1053071   .1754909     0.60   0.551    -.2471767    .4577909
+         92  |   .0681002   .1828352     0.37   0.711    -.2991352    .4353355
+         93  |   .1544297   .1898113     0.81   0.420    -.2268176     .535677
+         94  |   .0442648   .1971908     0.22   0.823    -.3518047    .4403342
+         95  |   .0556601   .1989082     0.28   0.781    -.3438588     .455179
+         96  |   -.015709   .2125365    -0.07   0.941    -.4426011    .4111831
+         97  |  -.1221824   .2186706    -0.56   0.579    -.5613952    .3170304
+         98  |  -.1863381   .2332966    -0.80   0.428    -.6549281    .2822519
+         99  |  -.2554286   .2420434    -1.06   0.296     -.741587    .2307298
+             |
+       _cons |   .1882653   1.056771     0.18   0.859    -1.934322    2.310853
+-------------+----------------------------------------------------------------
+     sigma_u |  1.1362086
+     sigma_e |  .20281999
+         rho |  .96911961   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+
+. testparm i.year
+
+ ( 1)  78.year = 0
+ ( 2)  79.year = 0
+ ( 3)  80.year = 0
+ ( 4)  81.year = 0
+ ( 5)  82.year = 0
+ ( 6)  83.year = 0
+ ( 7)  84.year = 0
+ ( 8)  85.year = 0
+ ( 9)  86.year = 0
+ (10)  87.year = 0
+ (11)  88.year = 0
+ (12)  89.year = 0
+ (13)  90.year = 0
+ (14)  91.year = 0
+ (15)  92.year = 0
+ (16)  93.year = 0
+ (17)  94.year = 0
+ (18)  95.year = 0
+ (19)  96.year = 0
+ (20)  97.year = 0
+ (21)  98.year = 0
+ (22)  99.year = 0
+
+       F( 22,    50) =   19.61
+            Prob > F =    0.0000
+
+. 
+. /*
+> Summary of (d):
+> - For both `ln(rob)` and `ln(mur)`, the pattern mirrors `ln(vio)`:
+>   * In Pooled OLS (Models 1 & 2), `shall` has a large, negative, and highly
+>     statistically significant coefficient:
+>     - Robbery: -0.773 (no controls) and -0.529 (with controls)
+>     - Murder:  -0.473 (no controls) and -0.313 (with controls)
+>   * Once state fixed effects (Model 3) and state + time fixed effects (Model 
+> 4)
+>     are included, the estimated coefficients shrink near zero and become
+>     statistically insignificant:
+>     - Robbery: -0.008 (State FE) and +0.027 (State + Year FE)
+>     - Murder:  -0.061 (State FE) and -0.015 (State + Year FE)
+> */
+. 
+. /*===========================================================================
+> ==
+> (e) In your view, what are the most important remaining threats to the intern
+> al
+> validity of this regression analysis?
+> 
+> Answer:
+> 1. Simultaneous Causality / Endogenous Policy Adoption: States may pass (or
+>    repeal) shall-issue laws in response to recent state-specific surges or
+>    trends in violent crime.
+> 2. Time-Varying Omitted Variables: Unobserved state-level factors that change
+>    over time—such as state-specific policing reforms, changes in local drug
+>    markets, sentencing laws, or state-specific economic shocks—are not absorb
+> ed
+>    by state fixed effects (which only capture time-invariant state factors) o
+> r
+>    year fixed effects (which only capture national shocks).
+> 3. Lagged Incarceration Rate Endogeneity: `incarc_rate` is lagged one year an
+> d
+>    depends on past crime rates, which can introduce bias in a fixed-effects
+>    specification.
+> 
+> (f) Based on your analysis, what conclusions would you draw about the effects
+> of concealed weapons laws on these crime rates?
+> 
+> Answer:
+> - The large negative relationship between shall-issue laws and violent crime
+>   found in simple cross-sectional / pooled OLS regressions is driven by omitt
+> ed
+>   variable bias from unobserved time-invariant state differences.
+> - Once we control for state fixed effects and national time trends, there is 
+> no
+>   statistically significant evidence that shall-issue concealed weapons laws
+>   reduce violent crime, robbery, or murder rates.
+> =============================================================================
+> */
+. 
+. * Close log file
+. log close
+      name:  <unnamed>
+       log:  /Users/faizessa/Library/CloudStorage/Dropbox/Mac/Documents/ta/ECON
+> UN3412/output/recitation7.log
+  log type:  text
+ closed on:  16 Nov 2026, 13:09:58
+-------------------------------------------------------------------------------
